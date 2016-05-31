@@ -1,0 +1,431 @@
+Learning to program with Minecraft
+Let's Get Fracking!
+
+"Hello World!" programs are dumb(哑的), so you're going to dive right in and make a game within Minecraft – call it Treasure Hunt. The aim of the game is to find (and demolish(拆除)!) a diamond block that has been hidden (buried) somewhere in the Minecraft world. Every 10 seconds, the program will post "Colder!" or "Warmer!" to the chat screen, depending on whether you are farther from or closer to the hidden block than the last time you checked (see the game program in Listing 1).
+
+Listing 1
+
+treasureHunt.py
+
+import random, math, time
+import mcpi.block as block
+import mcpi.minecraft as minecraft
+mc=minecraft.Minecraft.create()
+
+v_height=0
+
+while v_height <= 0:
+    (tx, tz)=(random.randint(-125,125), random.randint(-125,125))
+    v_height=mc.getHeight(tx, tz)
+
+mc.setBlock(tx, v_height-2, tz, block.DIAMOND_BLOCK)
+
+vdistance = math.sqrt(math.pow(mc.player.getTilePos().x-tx, 2) + math.pow(mc.player.getTilePos().z-tz, 2))
+
+while mc.getBlock(tx, v_height-2, tz)!=0:
+
+    vnewdistance=math.sqrt(math.pow(mc.player.getTilePos().x-tx,2)+ math.pow(mc.player.getTilePos().z-tz, 2))
+
+    if vnewdistance == 0: mc.postToChat("Dig!")
+    elif vdistance > vnewdistance: mc.postToChat("Warmer!")
+    elif vdistance < vnewdistance: mc.postToChat("Colder!")
+    else: mc.postToChat("Move!")
+
+    vdistance=vnewdistance
+
+    time.sleep(10)
+
+mc.postToChat("Treasure found... And destroyed!")
+mc.postToChat("Congratulations!")
+
+Line 1 loads several standard Python modules you'll need later on. With the random module, you'll pick a place to hide the treasure; math comes with methods like sqrt (square root) and pow (power) that you'll need to calculate(计算) the distance from the player to the treasure. Finally, you'll need time to post messages every 10 seconds.
+
+Lines 3 and 4 import Minecraft-specific modules. The block module allows you to manipulate(操纵) blocks, and the minecraft module allows you to know the player's position, to print messages to the chat window, and so forth(向前).
+
+Line 5 creates a connection to the running Minecraft server. Lines 3 to 5 will be pretty standard in all the Minecraft programs you write.
+
+After loading all the necessary modules, the first thing you have to do is hide the treasure. The Pi version of Minecraft is 256 blocks wide on the x axis(轴) and 256 blocks deep on the z axis. Position (0,0) is the center of the grid. The y axis is up/down. I haven't been able to find the upper limit for the y axis, but 0 is sea level, which will be important later.
+
+To keep things safe, the program will place the treasure within a square area that has 251 squares on a side (line 10). Even though you're avoiding the extreme(极端的) edges (Minecraft Pi sometimes crashes when you play too close to the limits of the world), you still have a playing field of 63,001 blocks, and the treasure can be anywhere  … or almost. To avoid burying the treasure under the sea (because that would be evil(邪恶的)), you check to make sure the highest point of the chosen location is above sea level (lines 9 to 11) with getHeight(), which is part of the Minecraft API.
+
+So that the diamond is not immediately visible(明显的), you push it two layers under the surface (line 13). The setBlock method used in this instruction is part of the Minecraft API (Table 2) and takes the x, y, z position of the block you want to modify(修改), plus the type of block you want to transform(改变) it into. For a full list of the types of blocks you can use, check out the Minecraft: Pi Edition wiki [5].
+
+Tabelle 2
+
+Minecraft API Methods
+
+Method
+	
+
+Arguments
+
+
+Returns
+	
+
+Description
+
+Minecraft Class: mc.[method]
+
+getBlock
+	
+
+x, y, z
+	
+
+blockId: int
+	
+
+Get the block ID at the named coordinates(坐标)
+
+getBlockWithData
+	
+
+x, y, z
+	
+
+vec3: obj
+	
+
+Get a block object at named coordinates
+
+getBlocks
+	
+
+x0, y0, z0, x1, y1, z1
+	
+
+[int]
+	
+
+Get block IDs in cuboid(立方形的) between two coordinates(坐标)
+
+setBlock
+	
+
+x, y, z, id, [state]
+	
+
+ 
+	
+
+Sets a block at coordinates; optional(可选择的) argument state is between 0 and 15
+
+setBlocks
+	
+
+x0, y0, z0, x1, y1, z1, id, [state]
+	
+
+ 
+	
+
+Sets blocks between two sets of coordinates; optional argument state is between 0 and 15
+
+getHeight
+	
+
+x,z
+	
+
+int
+	
+
+Returns the highest block at a point
+
+getPlayerEntityIds
+	
+
+ 
+	
+
+[int]
+	
+
+Returns the IDs of all players connected to the game
+
+saveCheckpoint
+	
+
+ 
+	
+
+ 
+	
+
+Saves the current state of the game
+
+restoreCheckpoint
+	
+
+ 
+	
+
+ 
+	
+
+Restores(恢复) the game to the latest saved state
+
+postToChat
+	
+
+message: str
+	
+
+ 
+	
+
+Posts a message to the chat
+
+setting
+	
+
+key, stat: bol
+	
+
+ 
+	
+
+Changes the settings of the world; key values: world_immutable, nametags_visible
+
+Player Class: mc.player.[method]
+
+getPos
+	
+
+x, y, z
+	
+
+vec3: obj
+	
+
+Returns the player's position as an object with floats
+
+setPos
+	
+
+x, y, z
+	
+
+ 
+	
+
+Sets the player's position using floats
+
+getTilePos
+	
+
+x, y, z
+	
+
+vec3: obj
+	
+
+Returns the player's position as an object with integers(整数)
+
+setTilePos
+	
+
+x, y, z
+	
+
+ 
+	
+
+Sets the player's position using integers
+
+setting
+	
+
+key, stat: bol
+	
+
+ 
+	
+
+Changes the player's settings; key value: autojump
+
+Events Class: mc.events.[method]
+
+clearAll
+	
+
+ 
+	
+
+ 
+	
+
+Clears all events from buffer(缓冲区)
+
+pollBlockHits
+	
+
+ 
+	
+
+[vec3: obj]
+	
+
+Returns an array(数组) of block hits; block hits created with sword right-click
+
+Camera Class: mc.camera.[method]
+
+setNormal
+	
+
+[entityID]
+	
+
+ 
+	
+
+Sets the camera to normal for a list of player entities(实体)
+
+setFixed
+	
+
+ 
+	
+
+ 
+	
+
+Sets the camera to fixed
+
+setFollow
+	
+
+[entityId]
+	
+
+ 
+	
+
+Sets the camera to follow for a list of player entities
+
+setPos
+	
+
+x, y, z
+	
+
+ 
+	
+
+Sets the camera position to coordinates(坐标)
+
+Entity Class: mc.entity.[method]
+
+getPos
+
+id: int
+
+vec3: obj
+
+Gets the position of the entity as floats
+
+setPos
+
+entityId:int, x, y, z
+
+Sets the position of the entity
+
+getTilePos
+
+entityId: int
+
+vec3: obj
+
+Returns the position of an entity(实体) as a vector(矢量) with integers(整数)
+
+setTilePos
+
+
+entityId:int, x, y, z
+
+Sets the position of an entity with integers
+
+setting
+
+entityId: int, key, stat: bol
+	
+
+ 
+	
+
+Changes the entity's settings; key value: autojump
+
+An unexpected(意外的) effect of the code as described is that the diamond is not only underground but can also be hidden under a tree. Because this adds a little more challenge to the game, I decided to leave it as is.
+Minesweep
+
+Before entering the main loop(环) of the game, you first measure the distance from the point at which the player starts to the diamond stash(藏匿处) (line 15). Note that the distance to the treasure is as the crow flies. Vertical(垂直的) distance is not taken into account. The coordinates(坐标) of the treasure are stored in tx and ty, and you can determine player position by using the player.getTilePos() Minecraft method. This method returns a vector with three attributes(属性): x, y and z. So, you can find out the x component(成分) of your player's coordinates(坐标) by calling:
+
+mc.player.getTilePos().x
+
+Just change the trailing(追踪) x, for y or z to get the corresponding components of the player's coordinates. This, by the way, is called dot notation.
+
+You will have learned from geometry that the way to calculate(计算) a distance between two points (your player and the diamond) on a grid is by using the Pythagorean theorem(定理) (Figure 2). The difference between mc.player.getTilePos().x and tx is the length of one of the legs of a right triangle and the difference between mc.player.getTilePos().z and tz is the length of the other leg. The hypotenuse(直角三角形的斜边) of your imaginary(虚构的) triangle is the distance between the two points: In Python, that calculation(计算) looks like line 15.
+Abbildung 2: Using the Pythagorean theorem(定理), you can calculate(计算) the distance from the player to the diamond.
+
+The aim of the game is to locate(位于) and destroy the diamond, so now you create a loop(环) that uses the Minecraft method getBlock() to check the content of the diamond's location (line 17). As soon as the location contains air (i.e., 0, which is the numeric(数) value for a block of type AIR [5]), the diamond has been destroyed and the loop will exit. Meanwhile, you must check the player position every 10 seconds to see if it is any closer to or farther from the treasure (lines 21-24).
+
+If the distance is 0 (i.e., the player has arrived at the correct location), the program uses the postToChat() Minecraft method to show a Dig! message in the chat window. If the distance has decreased(减少) since the last time you checked, you post Warmer! (Figure 3); if it has increased (i.e., the player has moved farther away from the goal), you'll post Colder!. If the distance hasn't changed, you can assume(承担) the player hasn't moved and you post the incentive(动机) Move!.
+Abbildung 3: Messages in the chat window guide the player toward the treasure.
+
+The new distance becomes the old distance (line 26), then the program waits for 10 seconds (line 28) for the player to move, and the cycle starts again.
+
+As soon as the player locates(位于) (Figure 4) and destroys the diamond, the loop(环) exits, and the program congratulates the player (Figure 5) and ends.
+Abbildung 4: You found the treasure. Now smash(粉碎) it to bits!
+Abbildung 5: The program congratulates you on your successful quest(追求).
+
+    Exploring the Kano Kit Pi pack and learning environment
+
+    The Kano Kit learning platform puts the Pi in easy reach for even the youngest users.
+    more ?
+    Event Report: Pi and More 3
+
+    From all over Germany, Raspberry Pi fans went to Trier in mid-June for "Pi and More 3." For a whole day, visitors of all ages enjoyed lectures and participated(参与) in hands-on workshops(车间).
+    more ?
+    Use Scratch's senses to design a game
+
+    To create a game with action and consequences(结果), you need a tool that can sense information in real time. We show how to do this using the Scratch programming environment.
+    more ?
+    Creating a multiplayer quick-reaction game
+
+    The quick-reaction game provides an introduction to building simple circuits(电路) with the Raspberry Pi and controlling those circuits with ScratchGPIO, an advanced version of Scratch.
+    more ?
+    Use CherryPy add a web interface(界面) to a Python script
+
+    We show how to use Python and CherryPy to turn your Raspberry Pi and a handy display into your own online poker(拨火棍) game.
+    more ?
+
+Current Issue
+12/2015
+BPi-R1: A Banana Pi-based server-router
+
+    Current Issue
+    Order Print Issue
+    Subscribe
+
+Buy this issue as a PDF
+
+Price $15.99
+(incl. VAT)
+
+www.raspberrypi.org
+
+    Skycademy Update
+    Formula(公式) AllCode – robotics(机器人学) course
+    Twitter for dogs
+    The TRS-80 model 100 goes online
+    Australia & Singapore Pioneering Education Tour
+    Rocket launch(发射) footage(英尺长度) from an onboard Pi
+    Education Summit Videos from EuroPython
+    Science lessons with the camera board
+    After Dark
+    Bat Pi
+
+    Contact
+
+? 2015 Linux New Media USA, LLC
