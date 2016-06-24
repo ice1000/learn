@@ -35,3 +35,14 @@ me:grow()
 print(me.age)
 
 print(me.job)
+
+function me: trans()
+  if(self.sex == 3) then 
+    self.sex = 0
+  else
+    self.sex = 3
+  end
+  return self.sex
+end
+
+me:trans()
