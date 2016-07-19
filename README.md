@@ -1,8 +1,8 @@
-# learn
+# learn is:
 
-codes written while learning them.
+Some codes written while learning them.
+Sorted by language or technology.
 
 ## Interesting codes
 
 + [MinecraftPi plugins](./Python)
-+ []
