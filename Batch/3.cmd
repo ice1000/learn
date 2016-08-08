@@ -1,0 +1,3 @@
+@echo off
+label c:/¾í±êÐÞ¸Ä
+pause
