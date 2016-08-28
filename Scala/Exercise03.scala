@@ -3,6 +3,8 @@ import java.util.Scanner
 
 /**
 	* Created by ice1000 on 2016/8/27.
+	*
+	* fib
 	*/
 class Exercise03 extends Exercise02 {
 	val list = new util.ArrayList[BigInt]()
@@ -10,11 +12,7 @@ class Exercise03 extends Exercise02 {
 	list.add(1)
 
 	def ->(index: Int): BigInt = {
-		if (index >= list.size()) {
-			(list.size() to index) foreach { x =>
-				list.add(list.get(x - 1) + list.get(x - 2))
-			}
-		}
+		if (index >= list.size()) (list.size() to index) foreach { x => list.add(list.get(x - 1) + list.get(x - 2)) }
 		list get index
 	}
 }

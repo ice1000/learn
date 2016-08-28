@@ -3,7 +3,12 @@
 	*/
 class Exercise02 {
 
-	var fuck = 1
+	var fuck = 0
+
+	def this(int: Int) {
+		this
+		fuck = int
+	}
 
 	def foo(int: Int) = {
 		println(s"fuck = $fuck, int = $int")
