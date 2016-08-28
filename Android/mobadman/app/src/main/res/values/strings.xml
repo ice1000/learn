@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Kevintheory</string>
+    <string name="text1"></string>
+    <string name="text2">点击发射</string>
+    <string name="text3">换武器</string>
+    <string name="text6">兴奋值</string>
+    <string name="text7">体力值</string>
+    <string name="text8">学习值</string>
+    <string name="text9">本游戏个人制作</string>
+    <string name="text10">——张寅森</string>
+    <string name="text11">作者QQ:951394653</string>
+    <string name="text12">百度ID：精灵谱尼</string>
+    <string name="action_settings">Settings</string>
+</resources>

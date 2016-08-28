@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">课程表</string>
+    <string name="lesson">lesson</string>
+    <string name="time">time</string>
+</resources>

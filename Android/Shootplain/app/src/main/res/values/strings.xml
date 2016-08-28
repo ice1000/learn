@@ -1,0 +1,16 @@
+<resources>
+<string name="app_name">Shoot emoji</string>
+<string name="copyright">本游戏个人制作</string>
+<string name="copyright2">——张寅森</string>
+<string name="copyright3">作者QQ:951394653</string>
+<string name="copyright4">百度ID:精灵谱尼</string>
+<!--<string name="copyright">1</string>-->
+<!--<string name="copyright2">1</string>-->
+<!--<string name="copyright3">1</string>-->
+<!--<string name="copyright4">1</string>-->
+<string name="extra">Extra hit</string>
+<string name="big">Killing hit</string>
+<string name="fuck">BOOM!!</string>
+<string name="hello_world">Hello world!</string>
+<string name="action_settings">Settings</string>
+</resources>
