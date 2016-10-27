@@ -4,40 +4,39 @@
 
 trait Expr {
 	private var _eval = 0
-	def eval: Int = _eval
+	def eval: Int = {
+		println(_eval)
+		_eval
+	}
 	def eval_= (int: Int): Unit = {
-		output()
+		println(_eval)
 		_eval = int
 	}
-	def output(): Unit = println(eval)
 	implicit def turn(expr: Expr): Int = expr.eval
 }
 
 case class Num(n: Int) extends Expr {
-	override def eval: Int = n
+	eval = n
 }
 
 case class Neg(e: Expr) extends Expr {
-	override def eval: Int = -e.eval
+	eval = -e.eval
 }
 
 case class Plus(e1: Expr, e2: Expr) extends Expr {
-	override def eval: Int = e1.eval + e2.eval
-	output()
+	eval = e1.eval + e2.eval
 }
 
 case class Minus(e1: Expr, e2: Expr) extends Expr {
-	override def eval: Int = Plus(e1, Neg(e2))
-	output()
+	eval = Plus(e1, Neg(e2))
 }
 
 case class Times(e1: Expr, e2: Expr) extends Expr {
-	override def eval: Int = e1 * e2
-	output()
+	 eval = e1 * e2
 }
 
 case class DividedBy(e1: Expr, e2: Expr) extends Expr {
-	override def eval: Int = e1 / e2
+	 eval = e1 / e2
 }
 
 object Main {
