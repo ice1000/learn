@@ -6,10 +6,8 @@ import java.util.*
  * @author ice1000
  */
 
-interface Monoid {
-	companion object {
-		fun <T> combine(func: (T, T) -> T) = { i: T, j: T -> func(i, j) }
-	}
+object Monoid {
+	fun <T> combine(func: (T, T) -> T) = { i: T, j: T -> func(i, j) }
 }
 
 interface Functor {
