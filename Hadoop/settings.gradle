@@ -1,0 +1,5 @@
+rootProject.name = 'HadoopTest'
+include 'src:main'
+findProject(':src:main')?.name = 'main'
+
+
