@@ -28,11 +28,12 @@ fn main() {
 	//	let Node {
 	//		from: ref var,
 	//		to: ref var
-	//	} = node;
+	//	} = Node;
 
-	let mut list = Vec::new();
+	let mut list = Vec::from(1, 2, 3, 4);;
 	list.push(2333333);
 	list.push(6666);
+	list.append(233);
 	let list = list;
 
 	for i in list {
