@@ -1,0 +1,5 @@
+target
+out
+*.exe
+*.c
+*.dll

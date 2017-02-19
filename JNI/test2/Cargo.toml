@@ -1,0 +1,11 @@
+[package]
+name = "RustSamples"
+version = "0.0.1"
+authors = ["ice1000 <ice1000kotlin@foxmail.com>"]
+
+[lib]
+name = "dll"
+crate-type = ["dylib"]
+
+[dependencies]
+jni = "0.3.1"
