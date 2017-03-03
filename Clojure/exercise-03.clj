@@ -22,7 +22,7 @@
 (into [1 2 3] [:a :b :c])
 
 ; construct
-(cons [1 2 3] :a)
+; (cons [1 2 3] :a)
 
 ; 0 -> 10
 (range 10)
@@ -32,7 +32,7 @@
 
 ; in chinese
 ; ji ou xing
-(def parity [n]
+(defn parity [n]
   (loop [n n par 0]
     (if (= n 0)
       par
@@ -64,7 +64,7 @@
 
 (println (trampoline ice-odd? 123789))
 
-(def deeply-nested [n]
+(defn deeply-nested [n]
 
   (loop [n n
          result '(bottom)]

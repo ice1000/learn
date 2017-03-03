@@ -21,7 +21,7 @@
 
 ;define a function
 (defn indexed-word? [word]
-  (> (count %) 2))
+  (> #(count %) 2))
 
 ; use function
 (filter indexed-word? (str/split "My name is Van" #"\W+"))
