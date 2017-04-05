@@ -1,8 +1,8 @@
 module Tree where
 
-data Tree e = Leaf Int
-          | Node Int (Tree Int) (Tree Int)
-          | SNode Int (Tree Int)
+data Tree e = Leaf e
+          | Node e (Tree e) (Tree e)
+          | SNode e (Tree e)
            deriving (Show)
 
 -- Node 666 (Leaf 233) (Leaf 555)
@@ -13,7 +13,7 @@ data Tree e = Leaf Int
 
 -- Node 1 (SNode 2 (Leaf 4)) (Leaf 5)
 
-treeSum :: Tree e -> Int
+treeSum :: (Int e) => Tree e -> e
 treeSum (Leaf e) = e
 treeSum (SNode e sub) = e + (treeSum sub)
 treeSum (Node e left right) = e + (treeSum left) + (treeSum right)
