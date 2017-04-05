@@ -13,7 +13,7 @@ data Tree e = Leaf e
 
 -- Node 1 (SNode 2 (Leaf 4)) (Leaf 5)
 
-treeSum :: (Int e) => Tree e -> e
+treeSum :: (Num e) => Tree e -> e
 treeSum (Leaf e) = e
 treeSum (SNode e sub) = e + (treeSum sub)
 treeSum (Node e left right) = e + (treeSum left) + (treeSum right)
