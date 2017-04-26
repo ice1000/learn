@@ -4,6 +4,7 @@ data Tree e = Leaf e
           | Node e (Tree e) (Tree e)
           | SNode e (Tree e)
            deriving (Show)
+--
 
 -- Node 666 (Leaf 233) (Leaf 555)
 
