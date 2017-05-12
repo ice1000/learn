@@ -58,23 +58,27 @@ mergeHelper (TChar '-') a b = Sub a b
 mergeHelper (TChar '*') a b = Mul a b
 mergeHelper (TChar '/') a b = Div a b
 
-parse :: [Token] -> [Production] -> Maybe Production
-parse _ [TInt i] = Just $ Factor $ Imm i
-parse params [TStr s] = Just $ Factor (elemIndex (TStr s) params ==> Arg)
-parse _ (TChar '(':(Expression expr:(TChar ')':rest))) = Just $ Factor expr
-parse _ (Expression expr:(TChar '+':(Term term:rest))) = Just $ Expression $ Add expr term
-parse _ (Expression expr:(TChar '-':(Term term:rest))) = Just $ Expression $ Sub expr term
-parse _ (Term term:(TChar '*':(Factor fact:rest))) = Just $ Term $ Mul term fact
-parse _ (Term term:(TChar '/':(Factor fact:rest))) = Just $ Term $ Div term fact
-parse _ (Factor fact) = Just $ Term fact
-parse _ (Term term) = Just $ Expression term
-parse _ _ = Nothing
+parse :: [Token] -> [Production] -> Production
+parse _ [TInt i] =  Factor $ Imm i
+parse params [TStr s] =  Factor (elemIndex (TStr s) params ==> Arg)
+parse _ [TChar '(', Expression expr, TChar ')'] =  Factor expr
+parse _ [Expression expr, TChar '+', Term term] =  Expression $ Add expr term
+parse _ [Expression expr, TChar '-', Term term] =  Expression $ Sub expr term
+parse _ [Term term, TChar '*', Factor fact] =  Term $ Mul term fact
+parse _ [Term term, TChar '/', Factor fact] =  Term $ Div term fact
+parse _ [Factor fact] =  Term fact
+parse _ [Term term] =  Expression term
+parse _ production = head production
 --
 
 pass1 :: String -> AST
-pass1 code = let [params, tokens] = (splitOn [TChar ']'] (tail $ tokenize code))
-             in -- collapse
-               -- TODO
+pass1 code = let
+  [params, tokens0] = (splitOn [TChar ']'] (tail $ tokenize code))
+  production = map (\x -> parse params [x]) tokens0
+  -- collapse = zipWith3 (\x y z -> [x, y, z]) tokens0 (tail tokens0) (drop 2 tokens0)
+  tokens1 = init tokens0
+  tokens2 = tail tokens0
+  in -- collapse
 --
 
 evaluate :: AST -> AST
