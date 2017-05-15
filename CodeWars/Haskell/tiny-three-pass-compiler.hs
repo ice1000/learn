@@ -38,16 +38,19 @@ instance Applicative Parser where
     [(f a, s2) | (f, s1) <- p1 p, (a, s2) <- p2 s1]
 --
 
-unit :: a -> Parser a
-unit a = Parser $ \s -> [(a, s)]
+unitParser :: a -> Parser a
+unitParser a = Parser $ \s -> [(a, s)]
+
+emptyParser :: Parser a
+emptyParser = Parser $ \_ -> []
 
 instance Monad Parser where
-  return = unit
+  return = unitParser
   p >>= f = Parser $ \s -> concatMap (\(a, s1) -> parse (f a) s1) $ parse p s
 --
 
 instance MonadPlus Parser where
-  mzero = Parser $ \_ -> []
+  mzero = emptyParser
   mplus p q = Parser $ \s -> parse p s ++ parse q s
 --
 
@@ -60,8 +63,81 @@ instance Alternative Parser where
 
 satisfy :: (Production -> Bool) -> Parser Production
 satisfy p = item >>= (\c ->
-  if p c then unit c else Parser $ \_ -> [])
+  if p c then unitParser c else emptyParser)
 --
+
+matches :: Production -> Parser Production
+matches p = item >>= (\c -> case c of
+  p -> unitParser c
+  _ -> emptyParser)
+--
+
+fromToken :: Token -> Parser Production
+fromToken t = satisfy (== FromToken t)
+
+char :: Char -> Parser Production
+char c = fromToken $ TChar c
+
+numberParser :: Parser Production
+numberParser = satisfy (\x -> case x of
+  FromToken (TInt _) -> True
+  _                  -> False)
+--
+
+paramParser :: Parser Production
+paramParser = satisfy (\x -> case x of
+  FromToken (TStr _) -> True
+  _                  -> False)
+--
+
+plusParser :: Parser Production
+plusParser = do
+  Expression expr1 <- expression
+  char '+'
+  Term expr2 <- expression
+  return $ Expression $ Add expr1 expr2
+--
+
+minusParser :: Parser Production
+minusParser = do
+  Expression expr1 <- expression
+  char '-'
+  Term expr2 <- expression
+  return $ Expression $ Sub expr1 expr2
+--
+
+expression :: Parser Production
+expression = term <|> plusParser <|> minusParser
+
+timesParser :: Parser Production
+timesParser = do
+  Term term1 <- term
+  char '*'
+  Factor term2 <- term
+  return $ Term $ Mul term1 term2
+--
+
+divParser :: Parser Production
+divParser = do
+  Term term1 <- term
+  char '/'
+  Factor term2 <- term
+  return $ Term $ Div term1 term2
+--
+
+term :: Parser Production
+term = factor <|> timesParser <|> divParser
+
+expressionInside :: Parser Production
+expressionInside = do
+  char '('
+  expr <- expression
+  char ')'
+  return expr
+--
+
+factor :: Parser Production
+factor = numberParser <|> paramParser <|> expressionInside
 
 parseCode :: Parser a -> [Production] -> a
 parseCode parser production = case parse parser production of
@@ -74,7 +150,6 @@ item = Parser $ \s -> case s of
   [] -> []
   (h:t) -> [(h, t)]
 --
-
 
 alpha, digit :: String
 alpha = ['a'..'z'] ++ ['A'..'Z']
