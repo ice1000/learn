@@ -22,3 +22,5 @@ dfs m s e
 
 solve :: [[Bool]] -> XY -> XY -> [Move] 
 solve a b c = case dfs a b c of Just res -> res
+
+--[[True, True, False, False, False, ], [False, True, True, False, False, ], [False, False, True, True, False, ], [False, False, False, True, True, ], [False, False, False, False, True, ]]
