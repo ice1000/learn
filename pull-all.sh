@@ -5,4 +5,3 @@ git gc
 
 echo Ah��Fuck you
 
-read
