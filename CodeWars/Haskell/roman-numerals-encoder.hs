@@ -11,7 +11,7 @@ subtrahend n = head (dropWhile (\(a, _) -> a > n) $ zip romanDigit romanString)
 convert :: Integer -> (Integer, String)
 convert 0 = (0, [])
 convert n = let (i, st) = subtrahend n in
-let (i1, st1) = convert (n - i) in (i1, st ++ st1)
+  let (i1, st1) = convert (n - i) in (i1, st ++ st1)
 --
 
 solution :: Integer -> String
