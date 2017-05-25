@@ -1,13 +1,14 @@
 {-# LANGUAGE
-NoImplicitPrelude,
-GADTs,
-DataKinds,
-TypeFamilies,
-TypeOperators,
-RankNTypes,
-DeriveFunctor,
-UndecidableInstances
-#-}
+  NoImplicitPrelude,
+  GADTs,
+  DataKinds,
+  TypeFamilies,
+  TypeOperators,
+  RankNTypes,
+  DeriveFunctor,
+  UndecidableInstances
+  #-}
+--
 
 module Singletons where
 
@@ -54,22 +55,26 @@ zipWith f (VCons v l) (VCons v2 l2) = VCons (f v v2) $ zipWith f l l2
 
 (++) :: Vec v m -> Vec v n -> Vec v (Add m n)
 VNil ++ VNil = VNil
-(VCons x y) ++ VNil = (VCons x y)
 VNil ++ (VCons x y) = (VCons x y)
---(VCons a b) ++ (VCons x y) = (VCons x (VCons a b)) ++ y
+(++) (VCons a b) (VCons x y) = (VCons x (VCons a b)) ++ y
 
 -- The semantics should match that of take for normal lists.
--- take :: ??
-take = undefined
+take :: SNat n -> Vec a m -> Vec a n
+take SZero (VCons a m)         = VNil
+take (SSucc SZero) (VCons a m) = VCons a VNil
+take (SSucc n) (VCons a m)     = VCons a $ take n m
 
 -- The semantics should match that of drop for normal lists.
--- drop :: ??
-drop = undefined
+drop :: SNat n -> Vec a m -> Vec a o
+-- drop SZero survivor            = survivor
+-- drop (SSucc SZero) (VCons a m) = m
+-- drop (SSucc n) (VCons a m)     = drop n m
 
--- head :: ??
-head = undefined
+head :: Vec a n -> a
+head (VCons a n) = a
 
--- tail :: ??
--- tail = xs
+tail :: Vec a n -> a
+tail (VCons a VNil) = a
+tail (VCons a xs)   = tail xs
 
 
