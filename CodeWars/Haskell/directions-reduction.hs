@@ -10,7 +10,7 @@ dirReduce (a : (b : c))
   |fuck a b  = dirReduce c
   |otherwise = case dirReduce $ b : c of
      [] -> [a]
-     (h : t) -> if fuck a h then dirReduce t else a : h : (dirReduce t)
+     (h : t) -> if fuck a h then t else a : h : t
   where fuck North South = True
         fuck South North = True
         fuck East  West  = True
