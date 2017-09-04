@@ -30,6 +30,8 @@ define i32 @main() #2 {
   store i32 %5, i32* %3, align 4
   store i8 2, i8* %2, align 1
   store i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.1, i32 0, i32 0), i8** %4, align 8
+  %6 = load i8*, i8** @a, align 8
+  %7 = call i32 @puts(i8* %6)
   ret i32 0
 }
 
@@ -37,6 +39,8 @@ define i32 @main() #2 {
 define i32 @_Z2ggv() #3 {
   ret i32 1
 }
+
+declare i32 @puts(i8*) #1
 
 ; Function Attrs: noinline uwtable
 define internal void @_GLOBAL__sub_I_001.cpp() #0 section ".text.startup" {
