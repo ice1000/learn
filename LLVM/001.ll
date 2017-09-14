@@ -23,15 +23,17 @@ define i32 @main() #2 {
   %1 = alloca i32, align 4
   %2 = alloca i8, align 1
   %3 = alloca i32, align 4
-  %4 = alloca i8*, align 8
+  %4 = alloca i8, align 1
+  %5 = alloca i8*, align 8
   store i32 0, i32* %1, align 4
   store i8 -23, i8* %2, align 1
-  %5 = call i32 @_Z2ggv()
-  store i32 %5, i32* %3, align 4
+  %6 = call i32 @_Z2ggv()
+  store i32 %6, i32* %3, align 4
   store i8 2, i8* %2, align 1
-  store i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.1, i32 0, i32 0), i8** %4, align 8
-  %6 = load i8*, i8** @a, align 8
-  %7 = call i32 @puts(i8* %6)
+  store i8 0, i8* %4, align 1
+  store i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.1, i32 0, i32 0), i8** %5, align 8
+  %7 = load i8*, i8** @a, align 8
+  %8 = call i32 @puts(i8* %7)
   ret i32 0
 }
 
