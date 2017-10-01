@@ -3,3 +3,5 @@
 /Kotlin/lib/kotlin-runtime.jar
 .idea/
 *~
+*.exe
+*.ibc
