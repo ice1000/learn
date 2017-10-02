@@ -1,0 +1,61 @@
+CmcTest.FunctionCallTests.FuncCallTest5
+
+statement list:
+  immutable variable declaration [recurFunc]:
+    type:
+      lambda type [(i8)->i8]
+    initialize expression:
+      lambda:
+        type:
+          lambda type [(i8)->i8]
+        parameters:
+          immutable variable declaration [a]:
+            type:
+              primary type [i8]
+            initialize expression:
+              null expression
+        body:
+          statement list:
+            return label [inner]
+            immutable variable declaration [retTmp52037308]:
+              type:
+                primary type [i8]
+              initialize expression:
+                function call expression:
+                  receiver:
+                    variable expression [recur]:
+                      type:
+                        lambda type [(i8)->i8]
+                  parameters:
+                    variable expression [a]:
+                      type:
+                        primary type [i8]
+                  type:
+                    primary type [i8]
+            return statement [31864982]:
+              variable expression [retTmp52037308]:
+                type:
+                  primary type [i8]
+            return label [31864982]
+  mutable variable declaration [gg]:
+    type:
+      primary type [i8]
+    initialize expression:
+      null expression
+  assignment statemnt:
+    lhs:
+      variable expression [gg]:
+        type:
+          primary type [i8]
+    rhs:
+      function call expression:
+        receiver:
+          variable expression [recurFunc]:
+            type:
+              lambda type [(i8)->i8]
+        parameters:
+          int literal [233]:
+            primary type [i8]
+        type:
+          primary type [i8]
+

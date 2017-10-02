@@ -32,10 +32,13 @@ define i32 @_Z4plusii(i32, i32) #2 {
 define i32 @main() #3 {
   %1 = alloca i32, align 4
   %2 = alloca i8*, align 8
+  %3 = alloca i32, align 4
   store i32 0, i32* %1, align 4
   store i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str, i32 0, i32 0), i8** %2, align 8
-  %3 = load i8*, i8** %2, align 8
-  call void @_Z4shitPKc(i8* %3)
+  %4 = load i8*, i8** %2, align 8
+  call void @_Z4shitPKc(i8* %4)
+  %5 = call i32 @_Z4plusii(i32 1, i32 2)
+  store i32 %5, i32* %3, align 4
   ret i32 0
 }
 
