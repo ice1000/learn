@@ -1,0 +1,3 @@
+rootProject.name = 'test-kt-multiplatform'
+
+include 'test-kt-multiplatform-jvm', 'test-kt-multiplatform-js'
