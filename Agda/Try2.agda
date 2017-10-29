@@ -5,7 +5,7 @@ data ?? : Set where
   √ : ??
   × : ??
 
-_¿_∶_ : {A : Set} → ?? → A → A → A
+_¿_∶_ : ∀ {n} {A : Set n} → ?? → A → A → A
 √ ¿ a ∶ _ = a
 × ¿ _ ∶ a = a
 
