@@ -3,11 +3,11 @@ module Try4 where
 data _∧_ (P : Set) (Q : Set) : Set where
   ∧-intro : P → Q → (P ∧ Q)
 
-proof₃ : ∀ {P Q} → (P ∧ Q) → P
-proof₃ (∧-intro p q) = p
-
 _⇔_ : (P Q : Set) → Set
 a ⇔ b = (a → b) ∧ (b → a)
+
+proof₃ : ∀ {P Q} → (P ∧ Q) → P
+proof₃ (∧-intro p q) = p
 
 ∧-comm′ : ∀ {P Q} → (P ∧ Q) → (Q ∧ P)
 ∧-comm′ (∧-intro p q) = (∧-intro q p)
