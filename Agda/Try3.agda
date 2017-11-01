@@ -25,5 +25,6 @@ data _is-even : ℕ → Set where
 𝟜 = # 𝟚
 -- 𝟜 = # # 𝟘
 
-proof₂ : {a : Set} → a → a
+-- universal polymorphism
+proof₂ : ∀ {n} {a : Set n} → a → a
 proof₂ = λ z → z
