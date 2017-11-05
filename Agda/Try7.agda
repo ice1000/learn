@@ -3,6 +3,9 @@ module Try7 where
 open import Data.Bool
 open import Data.Nat
 open import Data.String
+open import Data.Fin
+open import Data.Unit
+open import Data.Empty
 
 data ℤ : Bool → Set where
   zero : ℤ true
@@ -22,10 +25,10 @@ data NonEmptyListOfℕ : Set where
   Suc : ListOfℕ → ℕ → NonEmptyListOfℕ
 
 data A₀ (B : Set) : Set where
-  someA₀ : A₀ B
+  someA₀ : B → A₀ B
 
 data A₁ : (B : Set) → Set where
-  someA₁ : A₁ ℕ
+  someA₁ : A₁ ℕ → A₁ Bool
 
 data L : Set
 data M : Set
@@ -41,3 +44,17 @@ data M where
 
 SomeList : L
 SomeList = 10 :: true :: nil
+
+data _⊎_ (A B : Set) : Set where
+  inj₀ : A → A ⊎ B
+  inj₁ : B → A ⊎ B
+
+data Bool[] : Bool → Set where
+  true  : ⊤ → Bool[] true
+  false : ⊥ → Bool[] false
+
+data ℕ[] : ℕ → Set where
+  zero : ⊤ → ℕ[] zero
+  even : ⊤ → (n : ℕ) → ℕ[] (suc (suc n))
+  odd  : ⊥ → (n : ℕ) → ℕ[] (suc (suc n))
+

@@ -1,10 +1,10 @@
 module Try4 where
 
-data _∧_ (P : Set) (Q : Set) : Set where
+data _∧_ (P Q : Set) : Set where
   ∧-intro : P → Q → (P ∧ Q)
 
 _⇔_ : (P Q : Set) → Set
-a ⇔ b = (a → b) ∧ (b → a)
+p ⇔ q = (p → q) ∧ (q → p)
 
 proof₃ : ∀ {P Q} → (P ∧ Q) → P
 proof₃ (∧-intro p q) = p
