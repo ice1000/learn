@@ -39,3 +39,6 @@ proof₄ = n%2=1 (n%2=1 (n%2=1 (n%2=1 1%2=1)))
 
 proof₅ : 8 is-odd → ⊥
 proof₅ (n%2=1 (n%2=1 (n%2=1 (n%2=1 ()))))
+
+proof₆ : ∀ {n} {a b : Set n} → a ≡ b → a → b
+proof₆ ab a rewrite ab = a

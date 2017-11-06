@@ -1,6 +1,6 @@
 module Try6 where
 
-open import Relation.Binary.PropositionalEquality
+-- open import Relation.Binary.PropositionalEquality
 open import Data.Product
 open import Data.Vec
 open import Level

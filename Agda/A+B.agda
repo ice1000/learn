@@ -1,18 +1,42 @@
 module A+B where
 
+open import Data.List
 open import Data.Nat
-open import Relation.Binary.PropositionalEquality
+open import Agda.Builtin.Equality
 
-_⇆₀_ : {A : Set} {a b c : A} → a ≡ b → b ≡ c → a ≡ c
-refl ⇆₀ refl = refl
+a+0=0+a : ∀ a → a + 0 ≡ a
+a+0=0+a  zero   = refl
+a+0=0+a (suc a) rewrite a+0=0+a a = refl
 
-_⇆₁_ : {A : Set} {a b c : A} → a ≡ b → b ≡ c → a ≡ c
-ab ⇆₁ bc with ab  | bc
-...        | refl | refl = refl
+++a+b=a+b++ : ∀ a b → suc a + b ≡ a + suc b
+++a+b=a+b++  zero   b = refl
+++a+b=a+b++ (suc a) b rewrite ++a+b=a+b++ a b = refl
 
-+0 : {n : ℕ} → 0 + n ≡ n + 0
-+0 = {!!}
+a+b=b+a : ∀ a b → a + b ≡ b + a
+a+b=b+a  zero     zero   = refl
+a+b=b+a  zero sb@(suc b)
+  rewrite a+0=0+a b
+        | a+0=0+a sb
+          = refl
+a+b=b+a (suc a) b
+  rewrite a+b=b+a a b
+        | ++a+b=a+b++ b a
+          = refl
 
-plus-comm : ∀ {a b} → a + b ≡ b + a
-plus-comm = {!!}
+rev : ∀ {n} {A : Set n} → List A → List A
+rev [] = []
+rev (x ∷ xs) = rev xs ++ [ x ]
+
+lemma : ∀ {n} {A : Set n} (a : A) (v : List A) → rev (v ∷ʳ a) ≡ a ∷ rev v
+lemma _ [] = refl
+lemma x (_ ∷ xs)
+  rewrite lemma x xs
+          = refl
+
+rev∘rev=id : ∀ {n} {A : Set n} (v : List A) → rev (rev v) ≡ v
+rev∘rev=id [] = refl
+rev∘rev=id (x ∷ xs)
+  rewrite lemma x (rev xs)
+        | rev∘rev=id xs
+          = refl
 
