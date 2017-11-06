@@ -8,18 +8,18 @@ open import Data.Unit
 open import Data.Empty
 
 data ℤ : Bool → Set where
-  zero : ℤ true
-  z+1  : ℤ true  → ℤ true
-  neg  : ℤ true  → ℤ false
-  z-1  : ℤ false → ℤ false
+  instance zero : ℤ true
+  instance z+1  : ℤ true  → ℤ true
+  instance neg  : ℤ true  → ℤ false
+  instance z-1  : ℤ false → ℤ false
 
 data BinTree : Set where
-  leaf : ℕ    → BinTree
-  node : Bool → BinTree → BinTree → BinTree
+  instance leaf : ℕ    → BinTree
+  instance node : Bool → BinTree → BinTree → BinTree
 
 data ListOfℕ : Set where
-  Nil : ListOfℕ
-  Suc : ListOfℕ → ℕ → ListOfℕ
+  instance Nil : ListOfℕ
+  instance Suc : ListOfℕ → ℕ → ListOfℕ
 
 data NonEmptyListOfℕ : Set where
   Suc : ListOfℕ → ℕ → NonEmptyListOfℕ
@@ -46,15 +46,19 @@ SomeList : L
 SomeList = 10 :: true :: nil
 
 data _⊎_ (A B : Set) : Set where
-  inj₀ : A → A ⊎ B
-  inj₁ : B → A ⊎ B
+  instance inj₀ : A → A ⊎ B
+  instance inj₁ : B → A ⊎ B
 
 data Bool[] : Bool → Set where
-  true  : ⊤ → Bool[] true
-  false : ⊥ → Bool[] false
+  instance true  : ⊤ → Bool[] true
+  instance false : ⊥ → Bool[] false
 
 data ℕ[] : ℕ → Set where
-  zero : ⊤ → ℕ[] zero
-  even : ⊤ → (n : ℕ) → ℕ[] (suc (suc n))
-  odd  : ⊥ → (n : ℕ) → ℕ[] (suc (suc n))
+  instance zero : ⊤ → ℕ[] zero
+  instance even : ⊤ → (n : ℕ) → ℕ[] (suc (suc n))
+  instance odd  : ⊥ → (n : ℕ) → ℕ[] (suc (suc n))
+
+data SetAB (A B : Set) : Bool → Set where
+  instance fromA : A → SetAB A B true
+  instance fromB : B → SetAB A B false
 
