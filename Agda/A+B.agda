@@ -13,10 +13,9 @@ a+0=0+a (suc a) rewrite a+0=0+a a = refl
 ++a+b=a+b++ (suc a) b rewrite ++a+b=a+b++ a b = refl
 
 a+b=b+a : ∀ a b → a + b ≡ b + a
-a+b=b+a  zero     zero   = refl
-a+b=b+a  zero sb@(suc b)
+a+b=b+a  zero zero   = refl
+a+b=b+a  zero b
   rewrite a+0=0+a b
-        | a+0=0+a sb
           = refl
 a+b=b+a (suc a) b
   rewrite a+b=b+a a b
