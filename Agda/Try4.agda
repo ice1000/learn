@@ -29,8 +29,8 @@ data _∨_ (P Q : Set) : Set where
   ∨-intro₁ : Q → P ∨ Q
 
 ∨-elim : ∀ {P Q} {R : Set} → (P → R) → (Q → R) → (P ∨ Q) → R
-∨-elim pr qr (∨-intro₀ p) = pr p
-∨-elim pr qr (∨-intro₁ p) = qr p
+∨-elim pr _ (∨-intro₀ p) = pr p
+∨-elim _ qr (∨-intro₁ q) = qr q
 
 ∨-comm′ : ∀ {P Q} → (P ∨ Q) → (Q ∨ P)
 ∨-comm′ (∨-intro₀ p) = ∨-intro₁ p
