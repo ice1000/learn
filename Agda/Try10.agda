@@ -26,6 +26,9 @@ data _is-double-of_ : ℕ → ℕ → Set where
 9≠4*2 : 9 is-double-of 4 → ⊥
 9≠4*2 (intro (sns (sns (sns (sns ())))))
 
+15≠7*2 : 15 is-double-of 7 → ⊥
+15≠7*2 (intro (sns (sns (sns (sns (sns (sns (sns ()))))))))
+
 -- data _*_≡_ : ℕ → ℕ → ℕ → Set where
 --   zts : ∀ {n} → 0 * n ≡ 0
 --   sts : ∀ {n m k} → m * n ≡ k → ???

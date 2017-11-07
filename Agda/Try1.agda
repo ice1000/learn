@@ -3,23 +3,23 @@ module Try1 where
 data Bool : Set where
   true false : Bool
 
-data 𝕟 : Set where
-  zero : 𝕟
-  succ : 𝕟 → 𝕟
+data ℕ : Set where
+  zero : ℕ
+  succ : ℕ → ℕ
 
 data Id (A : Set) : Set where
   pack : A → Id A
 
 data ⊥ : Set where
 
-id𝕟₀ : 𝕟 → 𝕟
-id𝕟₀ x = x
+idℕ₀ : ℕ → ℕ
+idℕ₀ x = x
 
 id₁ : {A : Set} → A → A
 id₁ {A} a = a
 
--- idTester₁ : 𝕟 → 𝕟
--- idTester₁ : id₁ {𝕟}
+-- idTester₁ : ℕ → ℕ
+-- idTester₁ : id₁ {ℕ}
 
 id₃ : {A : Set} (a : A) → A
 id₃ a = a
