@@ -6,7 +6,7 @@ open import Agda.Builtin.Equality
 
 rev : ∀ {n m} {A : Set n} → Vec A m → Vec A m
 rev [] = []
-rev {_} {m} (x ∷ xs) = rev xs ∷ʳ x
+rev (x ∷ xs) = rev xs ∷ʳ x
 
 lemma : ∀ {n m} {A : Set n} (a : A) (v : Vec A m) → rev (v ∷ʳ a) ≡ a ∷ rev v
 lemma _ [] = refl
@@ -20,4 +20,3 @@ rev∘rev=id (x ∷ xs)
   rewrite lemma x (rev xs)
         | rev∘rev=id xs
           = refl
-
