@@ -43,3 +43,10 @@ data ⊥ : Set where
 
 ¬ : Set → Set
 ¬ a = a → ⊥
+
+absurd₀ : ∀ {A} → ⊥ ∧ A → ⊥
+absurd₀ (∧-intro () a)
+
+absurd₁ : ∀ {A} → ⊥ ∨ A → A
+absurd₁ (∨-intro₀ ())
+absurd₁ (∨-intro₁ x) = x
