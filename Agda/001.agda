@@ -1,4 +1,4 @@
-module Try1 where
+module Try where
 
 data Bool : Set where
   true false : Bool

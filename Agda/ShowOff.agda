@@ -1,4 +1,4 @@
-module Try4 where
+module ShowOff where
 
 data _∧_ (P Q : Set) : Set where
   ∧-intro : P → Q → (P ∧ Q)
@@ -7,19 +7,19 @@ _⇔_ : (P Q : Set) → Set
 p ⇔ q = (p → q) ∧ (q → p)
 
 proof₃ : ∀ {P Q} → (P ∧ Q) → P
-proof₃ (∧-intro p q) = p
+proof₃ (∧-intro x x₁) = x
 
 ∧-comm′ : ∀ {P Q} → (P ∧ Q) → (Q ∧ P)
-∧-comm′ (∧-intro p q) = (∧-intro q p)
+∧-comm′ (∧-intro x x₁) = ∧-intro x₁ x
 
 ∧-comm : ∀ {P Q} → (P ∧ Q) ⇔ (Q ∧ P)
 ∧-comm = ∧-intro ∧-comm′ ∧-comm′
 
 ∧-assoc₀ : ∀ {P Q R} → ((P ∧ Q) ∧ R) → (P ∧ (Q ∧ R))
-∧-assoc₀ (∧-intro (∧-intro p q) r) = ∧-intro p (∧-intro q r)
+∧-assoc₀ (∧-intro (∧-intro x₁ x₂) x) = ∧-intro x₁ (∧-intro x₂ x)
 
 ∧-assoc₁ : ∀ {P Q R} → (P ∧ (Q ∧ R)) → ((P ∧ Q) ∧ R)
-∧-assoc₁ (∧-intro p (∧-intro q r)) = ∧-intro (∧-intro p q) r
+∧-assoc₁ (∧-intro x (∧-intro x₁ x₂)) = ∧-intro (∧-intro x x₁) x₂
 
 ∧-assoc : ∀ {P Q R} → (P ∧ (Q ∧ R)) ⇔ ((P ∧ Q) ∧ R)
 ∧-assoc = ∧-intro ∧-assoc₁ ∧-assoc₀
@@ -37,12 +37,12 @@ prop : {p : Set₁} → p → p ∨ (¬ p)
 prop p = ∨-intro₀ p
 
 ∨-elim : ∀ {P Q} {R : Set} → (P → R) → (Q → R) → (P ∨ Q) → R
-∨-elim pr _ (∨-intro₀ p) = pr p
-∨-elim _ qr (∨-intro₁ q) = qr q
+∨-elim pr qr (∨-intro₀ x) = pr x
+∨-elim pr qr (∨-intro₁ x) = qr x
 
 ∨-comm′ : ∀ {P Q} → (P ∨ Q) → (Q ∨ P)
-∨-comm′ (∨-intro₀ p) = ∨-intro₁ p
-∨-comm′ (∨-intro₁ q) = ∨-intro₀ q
+∨-comm′ (∨-intro₀ x) = ∨-intro₁ x
+∨-comm′ (∨-intro₁ x) = ∨-intro₀ x
 
 -- ∨-comm : ∀ {P Q} → (P ∨ Q) ⇔ (Q ∨ P)
 -- ∨-comm = ∧-intro ∨-comm′ ∨-comm′

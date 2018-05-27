@@ -7,6 +7,12 @@ data _+_≡_ : ℕ → ℕ → ℕ → Set where
   znn : ∀ {n} → 0 + n ≡ n
   sns : ∀ {m n k} → m + n ≡ k → suc m + n ≡ suc k
 
+7+8=15 : 7 + 8 ≡ 15
+7+8=15 = sns (sns (sns (sns (sns (sns (sns znn))))))
+
+theroem : 7 + 8 ≡ 16 → ⊥
+theroem (sns (sns (sns (sns (sns (sns (sns ())))))))
+
 5+5=10 : 5 + 5 ≡ 10
 5+5=10 = sns (sns (sns (sns (sns znn))))
 
