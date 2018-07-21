@@ -1,6 +1,7 @@
 module OddEven where
 
 open import Data.Nat
+open import Function
 
 data _is-even : ℕ → Set where
   Zero    : zero is-even
@@ -12,19 +13,19 @@ data _is-odd : ℕ → Set where
 
 even+1 : ∀ {n} → n is-even → suc n is-odd
 even+1  Zero        = One
-even+1 (EvenSuc n)  = OddSuc (even+1 n)
+even+1 (EvenSuc n)  = OddSuc $ even+1 n
 
 odd+1  : ∀ {n} → n is-odd  → suc n is-even
 odd+1   One         = EvenSuc Zero
-odd+1  (OddSuc  n)  = EvenSuc (odd+1 n)
+odd+1  (OddSuc  n)  = EvenSuc $ odd+1 n
 
 even+even : ∀ {n m} → n is-even → m is-even → (n + m) is-even
 even+even  Zero       m  = m
-even+even (EvenSuc n) m  = EvenSuc (even+even n m)
+even+even (EvenSuc n) m  = EvenSuc $ even+even n m
 
 odd+odd   : ∀ {n m} → n is-odd  → m is-odd  → (n + m) is-even
 odd+odd    One        m  = odd+1 m
-odd+odd   (OddSuc  n) m  = EvenSuc (odd+odd n m)
+odd+odd   (OddSuc  n) m  = EvenSuc $ odd+odd n m
 
 even+odd  : ∀ {n m} → n is-even → m is-odd  → (n + m) is-odd
 even+odd   Zero       m  = m

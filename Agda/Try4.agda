@@ -10,7 +10,7 @@ proof₃ : ∀ {P Q} → (P ∧ Q) → P
 proof₃ (∧-intro p q) = p
 
 ∧-comm′ : ∀ {P Q} → (P ∧ Q) → (Q ∧ P)
-∧-comm′ (∧-intro p q) = (∧-intro q p)
+∧-comm′ (∧-intro p q) = ∧-intro q p
 
 ∧-comm : ∀ {P Q} → (P ∧ Q) ⇔ (Q ∧ P)
 ∧-comm = ∧-intro ∧-comm′ ∧-comm′

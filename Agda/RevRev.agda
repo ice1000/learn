@@ -2,6 +2,7 @@ module RevRev where
 
 open import Data.Vec
 open import Data.Nat
+open import Data.Colist
 open import Agda.Builtin.Equality
 
 rev : ∀ {n m} {A : Set n} → Vec A m → Vec A m
