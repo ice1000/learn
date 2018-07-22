@@ -6,8 +6,17 @@ type date_unverified =
 // This is a very simple way just to show the syntax
 let verify_date (ymd:date_unverified) =
   if ymd.m > 12 then false
-  else if ymd.m = 1 || ymd.m = 3 || ymd.m = 5 || ymd.m = 7 || ymd.m = 8 || ymd.m = 10 || ymd.m = 12 then ymd.d <= 31
-  else if ymd.m = 4 || ymd.m = 6 || ymd.m = 9 || ymd.m = 11 then ymd.d <= 30
+  else if ymd.m = 1
+		|| ymd.m = 3
+		|| ymd.m = 5
+		|| ymd.m = 7
+		|| ymd.m = 8
+		|| ymd.m = 10
+		|| ymd.m = 12 then ymd.d <= 31
+  else if ymd.m = 4
+		|| ymd.m = 6
+		|| ymd.m = 9
+		|| ymd.m = 11 then ymd.d <= 30
   else if ymd.m = 2 then
 		if ymd.y % 4 = 0 && ymd.y % 400 > 0 then ymd.d <= 29
 		else ymd.d <= 28
