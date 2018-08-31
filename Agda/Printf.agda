@@ -5,7 +5,7 @@ open import Data.Char renaming (Char to ℂ; show to showℂ)
 open import Data.Nat using (ℕ; _+_)
 open import Data.Nat.Show renaming (show to showℕ)
 open import Data.Empty
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary using (yes; no)
 open import Function
 open import Coinduction
@@ -69,3 +69,7 @@ proof₁ = refl
 proof₂ : printf "%d岁，是%s" 24 "学生"
               ≡ "24岁，是学生"
 proof₂ = refl
+
+proof₃ : printf "%d岁，是%s" 25 "学生"
+              ≢ "24岁，是学生"
+proof₃ ()
