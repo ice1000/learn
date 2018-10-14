@@ -27,5 +27,7 @@ type date = d:date_unverified{verify_date d}
 let date_valid: date = MkDate 2000 2 8
 let date_valid2: date = MkDate 1926 8 17
 let date_valid3: date = MkDate 2001 2 28
+// [@expect_failure]
 // let date_invalid: date = MkDate 2000 2 32
+// [@expect_failure]
 // let date_invalid2: date = MkDate 2000 2 29
