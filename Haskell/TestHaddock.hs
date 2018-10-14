@@ -1,0 +1,39 @@
+-- | Rewriting with arbitrary rules.
+--
+--   The user specifies a relation symbol by the pragma
+--   @
+--       {-\# BUILTIN REWRITE rel #-}
+--   @
+--   where @rel@ should be of type @Δ → (lhs rhs : A) → Set i@.
+--
+--   Then the user can add rewrite rules by the pragma
+--   @
+--       {-\# REWRITE q #-}
+--   @
+--   where @q@ should be a closed term of type @Γ → rel us lhs rhs@.
+--
+--   We then intend to add a rewrite rule
+--   @
+--       Γ ⊢ lhs ↦ rhs : B
+--   @
+--   to the signature where @B = A[us/Δ]@.
+--
+--   To this end, we normalize @lhs@, which should be of the form
+--   @
+--       f ts
+--   @
+--   for a @'Def'@-symbol f (postulate, function, data, record, constructor).
+--   Further, @FV(ts) = dom(Γ)@.
+--   The rule @q :: Γ ⊢ f ts ↦ rhs : B@ is added to the signature
+--   to the definition of @f@.
+--
+--   When reducing a term @Ψ ⊢ f vs@ is stuck, we try the rewrites for @f@,
+--   by trying to unify @vs@ with @ts@.
+--   This is for now done by substituting fresh metas Xs for the bound
+--   variables in @ts@ and checking equality with @vs@
+--   @
+--       Ψ ⊢ (f ts)[Xs/Γ] = f vs : B[Xs/Γ]
+--   @
+--   If successful (no open metas/constraints), we replace @f vs@ by
+--   @rhs[Xs/Γ]@ and continue reducing.
+module TestHaddock where
