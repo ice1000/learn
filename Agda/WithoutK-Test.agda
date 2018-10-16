@@ -1,15 +1,21 @@
 {-# OPTIONS --without-K #-}
 module WithoutK-Test where
 
--- open import Data.Bool
-open import Data.Nat
-open import Relation.Binary.PropositionalEquality
+open import Agda.Builtin.Nat
+open import Agda.Builtin.Equality
+open import Data.Bool
 
-kksk : ∀ a → a ≡ ℕ → ℕ
-kksk .ℕ refl = zero
+kksk : ∀ a → a ≡ Nat → Nat
+kksk .Nat refl = zero
 
-kksk-wtf : ℕ ≡ ℕ → ℕ
-kksk-wtf = kksk ℕ
+kksk-wtf : Nat ≡ Nat → Nat
+kksk-wtf = kksk Nat
 
--- kksk-why : ℕ ≡ ℕ → ℕ
+coerce : ∀ {A B : Set} → A ≡ B → A → B
+coerce refl a = a
+
+-- coerce-id : (p : Bool ≡ Bool) → coerce p true ≡ true
+-- coerce-id refl = refl
+
+-- kksk-why : Nat ≡ Nat → Nat
 -- kksk-why refl = zero
