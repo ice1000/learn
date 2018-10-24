@@ -33,3 +33,4 @@ cofib : ∀ {i} -> Colist {i} ℕ
 head cofib = 0
 head (tail cofib) = 1
 tail (tail cofib) = zipWith _+_ cofib (tail cofib)
+
