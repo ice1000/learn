@@ -1,89 +1,91 @@
 module Parsers where
 
+open import Data.Product using (_×_; _,_)
+
 module Tuple where
-  data _×_ (A B : Set) : Set where
-    <_,_> : A → B → A × B
+  open import Level
 
-  fst : ∀ {A B} → A × B → A
-  fst < x , y > = x
+  variable
+    a b r : Level
+    A : Set a
+    B : Set b
+    R : Set r
 
-  snd : ∀ {A B} → A × B → B
-  snd < x , y > = y
+  fst : A × B → A
+  fst (x , y) = x
 
-  tuple : ∀ {n A B} {R : Set n} → (A → B → R) → A × B → R
-  tuple f < x , y > = f x y
+  snd : A × B → B
+  snd (x , y) = y
 
-  mapFst : ∀ {A B R} → (A → R) → A × B → R × B
-  mapFst f < x , y > = < f x , y >
+  tuple : (A → B → R) → A × B → R
+  tuple f (x , y) = f x y
 
-  mapSnd : ∀ {A B R} → (B → R) → A × B → A × R
-  mapSnd f < x , y > = < x , f y >
+  mapFst : (A → R) → A × B → R × B
+  mapFst f (x , y) = f x , y
 
-open Tuple public
+  mapSnd : (B → R) → A × B → A × R
+  mapSnd f (x , y) = x , f y
+
+open Tuple using (fst; snd; tuple; mapFst; mapSnd) public
 
 open import Data.Char
 open import Data.Bool
-open import Data.List renaming (_++_ to _list++_)
+open import Data.List renaming (_++_ to _+++_)
 
 open import Category.Monad
 open import Category.Functor
 open import Category.Applicative
 
 open import Function
+open import Level
 
-String : Set
+open RawMonad
+open RawMonadZero
+open RawMonadPlus
+open RawFunctor
+open RawApplicative
 String = List Char
 
-data Parser (A : Set) : Set where
-  MkParser : (String → List (A × String)) → Parser A
+variable A : Set
 
-parse : ∀ {A} → Parser A → (String → List (A × String))
-parse (MkParser f) = f
+record Parser (A : Set) : Set where
+  inductive
+  constructor MkParser
+  field parse : (String → List (A × String))
+open Parser
 
-unitParser : ∀ {A} → A → Parser A
-unitParser a = MkParser λ s → < a , s > ∷ []
+unitParser : A → Parser A
+unitParser a = MkParser λ s → (a , s) ∷ []
 
 instance
   ParserFunctor : RawFunctor Parser
-  ParserFunctor = record {
-    _<$>_ = λ f ps → MkParser λ p → map (mapFst f) $ parse ps p
-    }
+  _<$>_ ParserFunctor f ps = MkParser $ map (mapFst f) ∘ parse ps
 
   ParserMonad : RawMonad Parser
-  ParserMonad = record {
-      return = unitParser
-    ; _>>=_  = λ p f → MkParser $ concatMap (tuple $ parse ∘ f) ∘ parse p
-    }
+  return ParserMonad = unitParser
+  _>>=_  ParserMonad p f = MkParser $ concatMap (tuple $ parse ∘ f) ∘ parse p
 
   ParserMonadZero : RawMonadZero Parser
-  ParserMonadZero = record {
-      monad = ParserMonad
-    ; ∅     = MkParser $ const []
-    }
+  monad ParserMonadZero = ParserMonad
+  ∅     ParserMonadZero = MkParser $ const []
 
   ParserMonadPlus : RawMonadPlus Parser
-  ParserMonadPlus = record {
-      monadZero = ParserMonadZero
-    ; _∣_       = λ p q → MkParser λ s → parse p s list++ parse q s
-    }
+  monadZero ParserMonadPlus = ParserMonadZero
+  _∣_       ParserMonadPlus p q = MkParser λ s → parse p s +++ parse q s
 
-  -- ParserApplicative : RawApplicative Parser
-  -- ParserApplicative = record {
-  --     pure = unitParser
-  --   ; _⊛_  = λ p1 p2 → MkParser λ p → []
-  --   }
+  ParserApplicative : RawApplicative Parser
+  pure ParserApplicative = unitParser
+  _⊛_  ParserApplicative p1 p2 = MkParser λ p → []
 
 item : Parser Char
-item = MkParser λ {
-     []    → []
-  ; (h ∷ t) → (< h , t >) ∷ []
-  }
+parse item [] = []
+parse item (h ∷ t) = (h , t) ∷ []
 
 option0 : (b : Set) → Parser b → Parser b
 option0 d p = {!!}
 
 satisfy : (Char → Bool) → Parser Char
-satisfy p = RawMonad._>>=_ item ? (λ c → if (p c) then (RawMonad.return c) else ?)
+satisfy p = item >>= (λ c → if p c then (return c) else ?)
 
 -- parse1 : Parser ⊤
 -- parse1 = 
