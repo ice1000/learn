@@ -30,7 +30,9 @@ open Tuple using (fst; snd; tuple; mapFst; mapSnd) public
 
 open import Data.Char
 open import Data.Bool
+open import Data.Unit
 open import Data.List renaming (_++_ to _+++_)
+import Data.List.Categorical as LC
 
 open import Category.Monad
 open import Category.Functor
@@ -54,15 +56,12 @@ record Parser (A : Set) : Set where
   field parse : (String → List (A × String))
 open Parser
 
-unitParser : A → Parser A
-unitParser a = MkParser λ s → (a , s) ∷ []
-
 instance
   ParserFunctor : RawFunctor Parser
   _<$>_ ParserFunctor f ps = MkParser $ map (mapFst f) ∘ parse ps
 
   ParserMonad : RawMonad Parser
-  return ParserMonad = unitParser
+  return ParserMonad a = MkParser λ s → (a , s) ∷ []
   _>>=_  ParserMonad p f = MkParser $ concatMap (tuple $ parse ∘ f) ∘ parse p
 
   ParserMonadZero : RawMonadZero Parser
@@ -74,8 +73,17 @@ instance
   _∣_       ParserMonadPlus p q = MkParser λ s → parse p s +++ parse q s
 
   ParserApplicative : RawApplicative Parser
-  pure ParserApplicative = unitParser
+  pure ParserApplicative = return where open module M = RawMonad ParserMonad
   _⊛_  ParserApplicative p1 p2 = MkParser λ p → []
+
+open RawMonad ⦃ ... ⦄
+open RawMonadZero ⦃ ... ⦄
+open RawMonadPlus ⦃ ... ⦄
+open RawFunctor ⦃ ... ⦄
+open RawApplicative ⦃ ... ⦄
+
+open LC
+test = suc <$> (1 ∷ 2 ∷ [])
 
 item : Parser Char
 parse item [] = []
@@ -85,7 +93,9 @@ option0 : (b : Set) → Parser b → Parser b
 option0 d p = {!!}
 
 satisfy : (Char → Bool) → Parser Char
-satisfy p = item >>= (λ c → if p c then (return c) else ?)
+satisfy p = item M.>>= (λ c → if p c then (M.return c) else MZ.∅)
+  where module M  = RawMonad ParserMonad
+        module MZ = RawMonadZero ParserMonadZero
 
--- parse1 : Parser ⊤
--- parse1 = 
+parse1 : Parser ⊤
+parse1 = M.return tt where module M = RawMonad ParserMonad
