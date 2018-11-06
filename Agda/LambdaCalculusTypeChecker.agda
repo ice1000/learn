@@ -128,27 +128,29 @@ module Tests where
   open Untyped
 
   -- 233
-  litTest : typeCheck [] (lit 233) ≡ inj₂ _
+  litTest : typeCheck [] (lit 233) ≡ inj₂ (ok nat _)
   litTest = refl
 
   -- λ x . x
-  idFunc : typeCheck [] (lam "x" nat (var "x")) ≡ inj₂ _
+  idFunc : typeCheck [] (lam "x" nat (var "x")) ≡ inj₂ (ok (nat => nat) _)
   idFunc = refl
 
   -- (λ x . x) 233
-  idFuncApp : typeCheck [] (app (lam "x" nat (var "x")) (lit 233)) ≡ inj₂ _
+  idFuncApp : typeCheck [] (app (lam "x" nat (var "x")) (lit 233)) ≡ inj₂ (ok nat _)
   idFuncApp = refl
 
   -- (λ x . x) (λ x . x) 233
-  idFuncApp2 : typeCheck [] (app (app
-                (lam "x" (nat => nat) (var "x"))
-                (lam "x" nat (var "x"))) (lit 233)) ≡ inj₂ _
+  idFuncApp2 : typeCheck [] (app (app (lam "x" (nat => nat) (var "x"))
+                            (lam "x" nat (var "x"))) (lit 233))
+             ≡ inj₂ (ok nat _)
   idFuncApp2 = refl
 
   -- λ x . λ y . x
-  curriedConst : typeCheck [] (lam "x" nat (lam "y" nat (var "x"))) ≡ inj₂ _
+  curriedConst : typeCheck [] (lam "x" nat (lam "y" nat (var "x")))
+               ≡ inj₂ (ok (nat => nat => nat) _)
   curriedConst = refl
 
   -- λ x . y
-  badlyTyped : typeCheck [] (lam "x" nat (var "y")) ≡ inj₁ _
+  badlyTyped : typeCheck [] (lam "x" nat (var "y"))
+             ≡ inj₁ "Variable out of scope: y"
   badlyTyped = refl

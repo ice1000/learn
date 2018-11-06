@@ -1,9 +1,12 @@
 ---
+layout: post
+title: 把类型类用 `record` 实现出来
+category: Agda
+tags: Typeclass,Haskell,Agda
+description: Use record to implement typeclasses
 ---
 
 前排提醒：你或许需要一个[游标卡尺][游标卡尺]。
-
-# 把类型类用 `record` 实现出来
 
  [使用说明]: https://agda.readthedocs.io/en/latest/tools/generating-html.html
  [HoTT-Agda]: https://github.com/HoTT/HoTT-Agda/tree/master/core/lib
