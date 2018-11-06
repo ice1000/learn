@@ -1,4 +1,9 @@
-module LambdaCalculusTypeChecker where
+# Lambda 演算类型检查器
+
+这是一个 Agda Introduction 课程的内容。
+
+```agda
+module LambdaCalculusTypeChecking where
 
 open import Data.String
 open import Data.String.Unsafe
@@ -90,11 +95,14 @@ module TypeCheck where
   typeCheck : (Γ : Ctx) (e : Expr) -> TC (Success Γ e)
   typeCheck Γ (var x) = map₂ checkVar $ lookupVar Γ x
     where
-      checkVar : ∀ {x} -> (∃ λ a -> (x , a) ∈ Γ) -> Success Γ (var x)
+      checkVar : ∀ {x} -> (∃ λ a -> (x , a) ∈ Γ)
+               -> Success Γ (var x)
       checkVar (a , t) = ok a $ var _ t
 
-      lookupVar : (Γ : Ctx) (x : Name) -> TC (∃ λ a -> (x , a) ∈ Γ)
-      lookupVar [] x = inj₁ $ "Variable out of scope: " ++ x
+      lookupVar : (Γ : Ctx) (x : Name)
+                -> TC (∃ λ a -> (x , a) ∈ Γ)
+      lookupVar [] x = inj₁ $
+                "Variable out of scope: " ++ x
       lookupVar ((a , t) ∷ Γ) x with a ≟ x
       ... | yes refl = inj₂ $ t , emm Γ
       ... | no _ = map₂ (second hmm) $ lookupVar Γ x
@@ -105,15 +113,19 @@ module TypeCheck where
             xv <- typeCheck Γ x
             checkApp fv xv
     where
-      checkApp : ∀ {f x} -> Success Γ f -> Success Γ x -> TC (Success Γ $ app f x)
-      checkApp (ok nat f) (ok at a) = inj₁ $ "Nat is not a function!"
+      checkApp : ∀ {f x} -> Success Γ f -> Success Γ x
+               -> TC (Success Γ $ app f x)
+      checkApp (ok nat f) (ok at a) = inj₁ $
+               "Nat is not a function!"
       checkApp (ok (t => r) f) (ok at a) with decEq t at
       ... | yes refl = inj₂ $ ok r $ app f a
       ... | no _ = inj₁ $ "Argument type mismatch!"
 
-  typeCheck Γ (lam x t e) = map₂ checkLam $ typeCheck ((x , t) ∷ Γ) e
+  typeCheck Γ (lam x t e) = map₂ checkLam
+            (typeCheck ((x , t) ∷ Γ) e)
     where
-      checkLam : ∀ {x t e} -> Success ((x , t) ∷ Γ) e -> Success Γ (lam x t e)
+      checkLam : ∀ {x t e} -> Success ((x , t) ∷ Γ) e
+                 -> Success Γ (lam x t e)
       checkLam (ok a v) = ok (_ => a) $ lam _ _ v
 
 module Tests where
@@ -147,3 +159,4 @@ module Tests where
   badlyTyped : typeCheck [] (lam "x" nat (var "y"))
              ≡ inj₁ "Variable out of scope: y"
   badlyTyped = refl
+```
