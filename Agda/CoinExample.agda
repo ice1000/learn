@@ -2,6 +2,7 @@ module CoinExample where
 
 open import Codata.Conat hiding (pred)
 open import Codata.Thunk
+open import Codata.Colist
 open import Data.Nat hiding (pred) renaming (ℕ to Nat)
 open import Size
 open import Function
