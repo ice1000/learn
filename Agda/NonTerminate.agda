@@ -1,3 +1,4 @@
+{-# OPTIONS --type-in-type #-}
 module NonTerminate where
 
 open import lib.Basics
@@ -72,45 +73,48 @@ variable
   i : ULevel
   s : Size
 
+xx : SizeU
+xx = Size
+
 ones : Colist s Nat
 cohead ones = 1
 cotail ones = ones
 
 open import lib.types.List
 
-cotake : {A : Type i} -> Nat -> Colist ∞ A -> List A
-cotake O as = nil
-cotake (S n) as = cohead as :: cotake n (cotail as)
+-- cotake : {A : Type i} -> Nat -> Colist ∞ A -> List A
+-- cotake O as = nil
+-- cotake (S n) as = cohead as :: cotake n (cotail as)
 
-cozipWith : {A B C : Type i} -> (A -> B -> C)
-          -> Colist s A -> Colist s B -> Colist s C
-cohead (cozipWith f a b) = f (cohead a) (cohead b)
-cotail (cozipWith f a b) = cozipWith f (cotail a) (cotail b)
+-- cozipWith : {A B C : Type i} -> (A -> B -> C)
+--           -> Colist s A -> Colist s B -> Colist s C
+-- cohead (cozipWith f a b) = f (cohead a) (cohead b)
+-- cotail (cozipWith f a b) = cozipWith f (cotail a) (cotail b)
 
-cofib : Colist s Nat
-cohead cofib = 0
-cohead (cotail cofib) = 1
-cotail (cotail cofib) = cozipWith _+_ cofib (cotail cofib)
+-- cofib : Colist s Nat
+-- cohead cofib = 0
+-- cohead (cotail cofib) = 1
+-- cotail (cotail cofib) = cozipWith _+_ cofib (cotail cofib)
 
-_ = idp :> (cotake 1 ones == 1 :: nil)
-_ = idp :> (cotake 2 ones == 1 :: 1 :: nil)
-_ = idp :> (cotake 3 ones == 1 :: 1 :: 1 :: nil)
-_ = idp :> (cotake 4 ones == 1 :: 1 :: 1 :: 1 :: nil)
-_ = idp :> (cotake 5 ones == 1 :: 1 :: 1 :: 1 :: 1 :: nil)
-_ = idp :> (cotake 6 ones == 1 :: 1 :: 1 :: 1 :: 1 :: 1 :: nil)
-_ = idp :> (cotake 7 ones == 1 :: 1 :: 1 :: 1 :: 1 :: 1 :: 1 :: nil)
+-- _ = idp :> (cotake 1 ones == 1 :: nil)
+-- _ = idp :> (cotake 2 ones == 1 :: 1 :: nil)
+-- _ = idp :> (cotake 3 ones == 1 :: 1 :: 1 :: nil)
+-- _ = idp :> (cotake 4 ones == 1 :: 1 :: 1 :: 1 :: nil)
+-- _ = idp :> (cotake 5 ones == 1 :: 1 :: 1 :: 1 :: 1 :: nil)
+-- _ = idp :> (cotake 6 ones == 1 :: 1 :: 1 :: 1 :: 1 :: 1 :: nil)
+-- _ = idp :> (cotake 7 ones == 1 :: 1 :: 1 :: 1 :: 1 :: 1 :: 1 :: nil)
 
-a = cotake 15 cofib
+-- a = cotake 15 cofib
 
-_ = idp :> (a == O ::
-                   1 ::
-                   1 ::
-                   2 ::
-                   3 ::
-                   5 :: 8 :: 13 :: 21 :: 34 :: 55 :: 89 :: 144 :: 233 :: 377 :: nil)
+-- _ = idp :> (a == O ::
+--                    1 ::
+--                    1 ::
+--                    2 ::
+--                    3 ::
+--                    5 :: 8 :: 13 :: 21 :: 34 :: 55 :: 89 :: 144 :: 233 :: 377 :: nil)
 
 
-x = cotake 25 cofib
+-- x = cotake 25 cofib
 
-_ = idp :> (x == O :: 1 :: 1 :: 2 :: {!!})
+-- _ = idp :> (x == O :: 1 :: 1 :: 2 :: {!!})
 
