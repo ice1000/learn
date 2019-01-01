@@ -2,15 +2,11 @@
 
 module Example where
 
-import Data.Char
-import Data.List
-import Data.List.Split (splitOn)
-import Data.Maybe
 import Control.Monad
 import Control.Applicative
 
 alpha = ['a'..'z'] ++ ['A'..'Z']
-
+digit = ['0' .. '9']
 
 newtype Parser val = Parser { parse :: String -> [(val, String)]  }
 
@@ -62,6 +58,9 @@ char c = satisfy (== c)
 alphaC :: Parser Char
 alphaC = oneOf alpha
 
+digitC :: Parser Char
+digitC = oneOf digit
+
 oneOf :: String -> Parser Char
 oneOf c = satisfy (`elem` c)
 
@@ -82,15 +81,18 @@ string (x : xs) = do
   return $ x : xs
 
 alphaParser :: Parser String
-alphaParser = some alphaC
+alphaParser = whitespace >> some alphaC
+
+digitParser :: Parser Integer
+digitParser = whitespace >> read <$> some digitC
 
 whitespace :: Parser String
 whitespace = many $ oneOf " \t\r\n\f"
 
 tokenParser :: Parser [String]
 tokenParser = many $ do
-  token <- alphaParser
   whitespace
+  token <- alphaParser
   return token
 --
 
@@ -105,17 +107,18 @@ chainl1 p op = do
           <|> return a
 --
 
-data AST = ID | AST :+: AST deriving (Eq, Show)
-
 option :: Parser a -> a -> Parser a
 option m d = m <|> return d
 
-idParser :: Parser AST
-idParser = alphaParser >> return ID
-
-opParser :: Parser AST
-opParser = chainl1 idParser $ do
-  whitespace
-  char '+'
-  whitespace
-  return $ \x y -> x :+: y
+addP = whitespace >> char '+' >> return (+)
+subP = whitespace >> char '-' >> return (-)
+mulP = whitespace >> char '*' >> return (*)
+divP = whitespace >> char '/' >> return div
+add' = chainl1 sub' addP
+sub' = chainl1 mul' subP
+mul' = chainl1 div' mulP
+div' = chainl1 unit' divP
+unit' = digitParser <|> paren
+exprParser = add' <|> sub' <|> mul' <|> div' <|> unit'
+paren = char '(' *> exprParser <* char ')'
+pc = parseCode exprParser
