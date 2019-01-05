@@ -1,6 +1,7 @@
 {-# LANGUAGE GADTs           #-}
 {-# LANGUAGE TypeFamilies    #-}
 {-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Kata.AdditionAssoc.TestSpec (main) where
 
@@ -40,5 +41,5 @@ main = hspec $ do
       solution _0 _0 _0 `shouldBe` __0
       solution _1 _0 _1 `shouldBe` __2
       solution _5 _2 _0 `shouldBe` __7
-      solution _2 _3 _2 `shouldBe` __7{-# LANGUAGE GADTs           #-}
---     How can I make random tests?
+      solution _2 _3 _2 `shouldBe` __7
+    it "Methodical tests" $ $(makeTests [| solution |])
