@@ -1,0 +1,60 @@
+module readtutortial where
+
+import prelude
+
+data nat
+  = zero
+  | suc (n : nat)
+
+add (m : nat) : nat -> nat = split
+  zero  -> m
+  suc n -> suc (add m n)
+
+-- refl (A : U) (a : A) : Path A a a = <i> a
+
+face0 (A : U) (a b : A) (p : Path A a b) : A = p @ 0
+face1 (A : U) (a b : A) (p : Path A a b) : A = p @ 1
+
+sym (A : U) (a b : A) (p : Path A a b)
+    : Path A b a
+    = <i> p @ -i
+
+symPath (A : U) (a b : A) (p : Path A a b)
+ 	: Path (Path A a b) p (sym A b a (sym A a b p))
+	= refl (Path A a b) p
+
+cong (A B : U) (f : A -> B) (a b : A) (p : Path A a b)
+     : Path B (f a) (f b)
+     = <i> f (p @ i)
+
+data option (A : U)
+  = ok (a : A)
+  | notOk
+
+decEq : (a b : nat) -> option (Path nat a b) = split
+  zero   -> case0
+    where case0
+    	    : (a : nat)
+      	    -> option (Path nat zero a) = split
+      zero  -> ok (<i> zero)
+      suc n -> notOk
+  suc aa -> case1 aa
+    where case1 (aa : nat)
+    	    : (b : nat)
+      	    -> option (Path nat (suc aa) b) = split
+      zero   -> notOk
+      suc bb -> decide aa bb (decEq aa bb)
+        where decide (aa bb : nat)
+	        : option (Path nat aa bb)
+	        -> option (Path nat (suc aa) (suc bb)) = split
+          ok pp -> ok (<i> suc (pp @ i))
+          notOk -> notOk
+
+-- > decEq zero zero
+-- EVAL: ok (<!0> zero)
+-- > decEq (suc zero) (suc zero)
+-- EVAL: ok (<!0> suc zero)
+-- > decEq zero (suc zero)
+-- EVAL: notOk
+
+
