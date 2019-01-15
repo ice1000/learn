@@ -20,8 +20,8 @@ sym (A : U) (a b : A) (p : Path A a b)
     = <i> p @ -i
 
 symPath (A : U) (a b : A) (p : Path A a b)
- 	: Path (Path A a b) p (sym A b a (sym A a b p))
-	= refl (Path A a b) p
+         : Path (Path A a b) p (sym A b a (sym A a b p))
+        = refl (Path A a b) p
 
 cong (A B : U) (f : A -> B) (a b : A) (p : Path A a b)
      : Path B (f a) (f b)
@@ -34,19 +34,19 @@ data option (A : U)
 decEq : (a b : nat) -> option (Path nat a b) = split
   zero   -> case0
     where case0
-    	    : (a : nat)
-      	    -> option (Path nat zero a) = split
+                : (a : nat)
+                  -> option (Path nat zero a) = split
       zero  -> ok (<i> zero)
       suc n -> notOk
   suc aa -> case1 aa
     where case1 (aa : nat)
-    	    : (b : nat)
-      	    -> option (Path nat (suc aa) b) = split
+                : (b : nat)
+                  -> option (Path nat (suc aa) b) = split
       zero   -> notOk
       suc bb -> decide aa bb (decEq aa bb)
         where decide (aa bb : nat)
-	        : option (Path nat aa bb)
-	        -> option (Path nat (suc aa) (suc bb)) = split
+                : option (Path nat aa bb)
+                -> option (Path nat (suc aa) (suc bb)) = split
           ok pp -> ok (<i> suc (pp @ i))
           notOk -> notOk
 
@@ -57,4 +57,15 @@ decEq : (a b : nat) -> option (Path nat a b) = split
 -- > decEq zero (suc zero)
 -- EVAL: notOk
 
-
+decEq' : (a b : nat) -> option (Path nat a b) = split
+  zero   -> split@((b : nat) -> option (Path nat zero b)) with
+    zero  -> ok (<i> zero)
+    suc n -> notOk
+  suc aa -> split@((b : nat) -> option (Path nat (suc aa) b)) with
+    zero   -> notOk
+    suc bb -> decide aa bb (decEq aa bb)
+      where decide (aa bb : nat)
+              : option (Path nat aa bb)
+              -> option (Path nat (suc aa) (suc bb)) = split
+        ok pp -> ok (<i> suc (pp @ i))
+        notOk -> notOk
