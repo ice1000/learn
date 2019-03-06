@@ -24,8 +24,8 @@ data _<_ : Nat -> Nat -> Set where
 simple : zero < suc zero
 simple = case0 zero
 
-simple2 : suc zero < suc (suc zero)
-simple2 = case1 (case0 zero)
+simple2 : suc (suc zero) < suc (suc (suc zero))
+simple2 = case1 (case1 (case0 zero))
 
 data False : Set where
 
