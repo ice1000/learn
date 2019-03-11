@@ -24,7 +24,7 @@ muGenSucc = Bis muGenSucc
 public export
 Add : Conat -> Conat -> Conat
 Add Coz b = b
-Add (Cos a) b = Cos $ Add b a
+Add (Cos a) b = Cos $ Add a b
 
 reflx : (b : Conat) -> Bisimulation b b
 reflx Coz = Biz
@@ -44,16 +44,15 @@ symm (Bis a) = Bis $ symm a
 -- addN (Cos x) Biz = Bis (reflx x)
 -- addN (Cos x) (Bis y) = Bis (Bis (addN x y))
 
-addN : Bisimulation (Add a b) (Add b a) -> Bisimulation (Add (Cos a) b) (Add (Cos b) a)
-addN b = Bis (symm b)
+-- addN : Bisimulation (Add a b) (Add b a) -> Bisimulation (Add (Cos a) b) (Add (Cos b) a)
+-- addN b = Bis (symm b)
 
-toInductive : Conat -> Nat
-toInductive Coz = Z
-toInductive (Cos x) = S $ toInductive x
+lemma : (a : Conat) -> (b : Conat) -> Bisimulation (Cos (Add a b)) (Add a (Cos b))
+lemma Coz b = Bis (reflx b)
+lemma (Cos x) b = Bis (lemma x b)
 
 plusCommutative : (a : Conat) -> (b : Conat) ->
                   Bisimulation (Add a b) (Add b a)
 plusCommutative Coz Coz = Biz
-plusCommutative Coz (Cos x) = Bis (reflx x)
-plusCommutative (Cos x) Coz = Bis (reflx x)
-plusCommutative (Cos x) (Cos y) = Bis (addN $ plusCommutative y x)
+plusCommutative Coz (Cos x) = Bis (plusCommutative Coz x)
+plusCommutative (Cos x) y = (Bis $ plusCommutative x y) `trans` (Bis $ lemma y x)
