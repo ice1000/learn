@@ -9,15 +9,13 @@ open import Cubical.Data.Nat
            )
 open import Cubical.HITs.HitInt renaming (_+ℤ_ to _+_; ℤ to Z)
 
-+-zero : ∀ a → pos 0 + a ≡ a
-+-zero (pos zero) = refl
-+-zero (pos (suc n)) = cong sucℤ (+-zero (pos n))
-+-zero (neg zero) = posneg
-+-zero (neg (suc n)) = cong predℤ (+-zero (neg n))
-+-zero (posneg i) j = posneg (i ∧ j)
-
-+-i-zero : ∀ a i → posneg i + a ≡ a
-+-i-zero a i = cong (_+ a) (λ j → posneg (i ∧ ~ j)) ∙ +-zero a
++-zero : ∀ a i → posneg i + a ≡ a
++-zero (pos zero) i j = posneg (i ∧ ~ j)
++-zero (pos (suc n)) i = cong sucℤ (+-zero (pos n) i)
++-zero (neg zero) i j = posneg (i ∨ j)
++-zero (neg (suc n)) i = cong predℤ (+-zero (neg n) i)
+-- posneg i ≡ posneg j
++-zero (posneg j) i = {!!}
 
 +-pos-suc : ∀ a b → sucℤ (pos b + a) ≡ (pos (suc b) + a)
 +-pos-suc (pos zero) b = refl
@@ -40,9 +38,9 @@ open import Cubical.HITs.HitInt renaming (_+ℤ_ to _+_; ℤ to Z)
 +-neg-pred (posneg i) b = refl
 
 +-comm : (a b : Z) → a + b ≡ b + a
-+-comm a (pos zero) = sym (+-zero a)
-+-comm a (neg zero) = sym (cong (_+ a) (sym posneg) ∙ +-zero a)
++-comm a (pos zero) = sym (+-zero a i0)
++-comm a (neg zero) = sym (cong (_+ a) (sym posneg) ∙ +-zero a i0)
 +-comm a (pos (suc b)) = cong sucℤ (+-comm a (pos b)) ∙ +-pos-suc a b
 +-comm a (neg (suc b)) = cong predℤ (+-comm a (neg b)) ∙ +-neg-pred a b
--- a ≡ (posneg i + a)
-+-comm a (posneg i) = sym (+-i-zero a i)
+-- -- a ≡ (posneg i + a)
++-comm a (posneg i) = sym {!+-zero a i!}
