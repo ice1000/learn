@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --safe #-}
+{-# OPTIONS --cubical #-}
 module SymInt where
 
 open import Cubical.Core.Everything
@@ -7,7 +7,15 @@ open import Cubical.Data.Nat
            ; +-zero to :+:-zero
            ; _+_ to _:+:_
            )
+open import Cubical.Data.Int as Int using ()
 open import Cubical.HITs.HitInt renaming (_+ℤ_ to _+_; ℤ to Z)
+
+-- module Subst where
+--   have-+-comm : (A : Set) → (A → A → A) → Set
+--   have-+-comm A _+_ = (a b : A) → a + b ≡ b + a
+
+--   +-comm : ∀ a b → a + b ≡ b + a
+--   +-comm = subst (λ x → have-+-comm x {!!}) Int≡ℤ Int.+-comm
 
 +-zero : ∀ a i → posneg i + a ≡ a
 +-zero (pos zero) i j = posneg (i ∧ ~ j)

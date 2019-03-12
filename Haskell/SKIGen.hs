@@ -38,7 +38,7 @@ instance HasSKI SKI where
   i = I
   (@-) = App
 
-instance (HasSKI repr) => HasSKI (Scope repr) where
+instance {-# OVERLAPPING #-} (HasSKI repr) => HasSKI (Scope repr) where
   s = liftConst k (@-) s
   k = liftConst k (@-) k
   i = liftConst k (@-) i
