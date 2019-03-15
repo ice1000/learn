@@ -1,7 +1,7 @@
+{-# OPTIONS --safe #-}
 module LambdaCalculusTypeChecker where
 
-open import Data.String
-open import Data.String.Unsafe
+open import Data.String hiding (show)
 open import Data.Product renaming (map₂ to second)
 open import Data.Sum
 open import Data.Empty
@@ -10,13 +10,13 @@ open import Relation.Nullary
 open import Relation.Binary.PropositionalEquality
 
 open import Function
-open import Level renaming (suc to lsucc; zero to lzero)
 
-open import Agda.Builtin.List
-open import Agda.Builtin.Nat using (Nat)
+open import Data.List hiding (_++_)
+open import Data.Nat renaming (ℕ to Nat)
+open import Data.Nat.Show
 open import Agda.Builtin.Bool
 
-Name = String
+Name = Nat
 variable A : Set
 
 infixr 7 _=>_
@@ -77,24 +77,24 @@ module Erase where
 module TypeCheck where
   open Erase
   TypeError = String
-  TC : Set -> Set
-  TC A = TypeError ⊎ A
+  TCM : Set -> Set
+  TCM A = TypeError ⊎ A
   infixl 10 _>>=_
-  _>>=_ : ∀ {B D : Set} -> TC B -> (B -> TC D) -> TC D
+  _>>=_ : ∀ {B D : Set} -> TCM B -> (B -> TCM D) -> TCM D
   inj₁ x >>= f = inj₁ x
   inj₂ y >>= f = f y
 
   data Success (Γ : Ctx) : Expr -> Set where
     ok : ∀ a (v : Term Γ a) -> Success Γ (eraseType v)
 
-  typeCheck : (Γ : Ctx) (e : Expr) -> TC (Success Γ e)
+  typeCheck : (Γ : Ctx) (e : Expr) -> TCM (Success Γ e)
   typeCheck Γ (var x) = map₂ checkVar $ lookupVar Γ x
     where
       checkVar : ∀ {x} -> (∃ λ a -> (x , a) ∈ Γ) -> Success Γ (var x)
       checkVar (a , t) = ok a $ var _ t
 
-      lookupVar : (Γ : Ctx) (x : Name) -> TC (∃ λ a -> (x , a) ∈ Γ)
-      lookupVar [] x = inj₁ $ "Variable out of scope: " ++ x
+      lookupVar : (Γ : Ctx) (x : Name) -> TCM (∃ λ a -> (x , a) ∈ Γ)
+      lookupVar [] x = inj₁ $ "Variable out of scope: " ++ show x
       lookupVar ((a , t) ∷ Γ) x with a ≟ x
       ... | yes refl = inj₂ $ t , emm Γ
       ... | no _ = map₂ (second hmm) $ lookupVar Γ x
@@ -105,7 +105,7 @@ module TypeCheck where
             xv <- typeCheck Γ x
             checkApp fv xv
     where
-      checkApp : ∀ {f x} -> Success Γ f -> Success Γ x -> TC (Success Γ $ app f x)
+      checkApp : ∀ {f x} -> Success Γ f -> Success Γ x -> TCM (Success Γ $ app f x)
       checkApp (ok nat f) (ok at a) = inj₁ $ "Nat is not a function!"
       checkApp (ok (t => r) f) (ok at a) with decEq t at
       ... | yes refl = inj₂ $ ok r $ app f a
@@ -121,29 +121,53 @@ module Tests where
   open Untyped
 
   -- 233
-  litTest : typeCheck [] (lit 233) ≡ inj₂ (ok nat _)
+  litTest : typeCheck [] (lit 233) ≡ inj₂ (ok nat (Erase.lit 233))
   litTest = refl
 
   -- λ x . x
-  idFunc : typeCheck [] (lam "x" nat (var "x")) ≡ inj₂ (ok (nat => nat) _)
+  idFunc : typeCheck [] (lam 233 nat (var 233))
+         ≡ inj₂ (ok (nat => nat)
+                (Erase.lam 233 nat (Erase.var 233 (emm []))))
   idFunc = refl
 
   -- (λ x . x) 233
-  idFuncApp : typeCheck [] (app (lam "x" nat (var "x")) (lit 233)) ≡ inj₂ (ok nat _)
+  idFuncApp : typeCheck [] (app (lam 233 nat (var 233)) (lit 233))
+            ≡ inj₂ (ok nat (Erase.app (Erase.lam 233 nat
+                   (Erase.var 233 (emm [])))
+                   (Erase.lit 233)))
   idFuncApp = refl
 
   -- (λ x . x) (λ x . x) 233
-  idFuncApp2 : typeCheck [] (app (app (lam "x" (nat => nat) (var "x"))
-                            (lam "x" nat (var "x"))) (lit 233))
-             ≡ inj₂ (ok nat _)
+  idFuncApp2 : typeCheck [] (app (app (lam 233 (nat => nat) (var 233))
+                            (lam 666 nat (var 666))) (lit 233))
+             ≡ inj₂ (ok nat (Erase.app
+                    (Erase.app (Erase.lam 233 (nat => nat)
+                    (Erase.var 233 (emm [])))
+                    (Erase.lam 666 nat (Erase.var 666 (emm []))))
+                    (Erase.lit 233)))
   idFuncApp2 = refl
 
   -- λ x . λ y . x
-  curriedConst : typeCheck [] (lam "x" nat (lam "y" nat (var "x")))
-               ≡ inj₂ (ok (nat => nat => nat) _)
+  curriedConst : typeCheck [] (lam 123 nat (lam 345 nat (var 123)))
+               ≡ inj₂ (ok (nat => nat => nat)
+                      (Erase.lam 123 nat (Erase.lam 345 nat
+                      (Erase.var 123 (hmm (emm []))))))
   curriedConst = refl
 
   -- λ x . y
-  badlyTyped : typeCheck [] (lam "x" nat (var "y"))
-             ≡ inj₁ "Variable out of scope: y"
+  badlyTyped : typeCheck [] (lam 234 nat (var 123))
+             ≡ inj₁ "Variable out of scope: 123"
   badlyTyped = refl
+
+  appOnNat : typeCheck [] (app (lit 233) (lit 666))
+           ≡ inj₁ "Nat is not a function!"
+  appOnNat = refl
+
+  appOnNat2 : typeCheck [] (app (app (lam 1 nat (var 1)) (lit 2)) (lit 666))
+            ≡ inj₁ "Nat is not a function!"
+  appOnNat2 = refl
+
+  argTypeMis : typeCheck [] (app (lam 1 (nat => nat) (app (var 1) (lit 23))) (lit 2))
+             ≡ inj₁ "Argument type mismatch!"
+  argTypeMis = refl
+
