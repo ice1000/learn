@@ -1,8 +1,28 @@
 {-# OPTIONS --cubical #-}
 module DrammieCubical where
 
-open import Agda.Primitive.Cubical
-open import Agda.Builtin.Cubical.Path renaming (_≡_ to _==_)
+open import Cubical.Core.Everything renaming (_≡_ to _==_)
+open import Cubical.Data.Unit
+open import Cubical.Data.Empty
+
+data maybe (A : Set) : Set where
+  just : A -> maybe A
+  nothing : maybe A
+
+-- Unwrap : (a : maybe A) → Set
+-- Unwrap {A = A} (just x) = A
+-- Unwrap nothing = Unit
+-- unwrap : (a : maybe A) → Unwrap a
+-- unwrap (just x) = x
+-- unwrap nothing = tt
+
+just-injective : ∀ {A : Set} (a b : A) → just a == just b → a == b
+just-injective {A} a b p = subst diagnose p refl
+  -- unwrap (p i)
+  where
+  diagnose : maybe A → Set
+  diagnose (just x) = a == x
+  diagnose nothing = ⊥
 
 data GirardParadox : Set where
   omegaSet     : GirardParadox
@@ -44,7 +64,7 @@ someTest : 2 ÷ 1 == 4 ÷ 2
 someTest = reduce 2 1 2
 
 _+_ : Q -> Q -> Q
-(ax ÷ bx) + (ay ÷ by) = ?
-(ax ÷ bx) + reduce ay by cy y = ?
+(ax ÷ bx) + (ay ÷ by) = ay ÷ ay
+(ax ÷ bx) + reduce ay by cy y = {!!}
 reduce ax bx cx x + y = {!!}
 
