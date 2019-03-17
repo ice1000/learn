@@ -21,25 +21,38 @@ inspect f x = [ refl ]
 
 -- Lift is necessary for Bool and Bool ≡ Bool are of different level. :-P
 Bool≡[Bool≡Bool] : Lift Bool ≡ (Bool ≡ Bool)
-Bool≡[Bool≡Bool] = ua (isoToEquiv (iso (ua ∘ f ∘ lower) (lift ∘ g) sec ret))
+Bool≡[Bool≡Bool] = ua (isoToEquiv (iso (f ∘ lower) (lift ∘ g) sec ret))
   where
-  f : Bool → Bool ≃ Bool
-  f false = idEquiv Bool
-  f true = notEquiv
+  f : Bool → Bool ≡ Bool
+  f false = refl
+  f true = notEq
 
   g : Bool ≡ Bool → Bool
   g idp = transport idp false
 
-  sec : ∀ idp → ua (f $ g idp) ≡ idp
-  -- f (transport idp false) ≡ idp
-  sec idp = cong ua {!!} ∙ lemma
-    where
-    lemma : ua (pathToEquiv idp) ≡ idp
-    lemma = secEq univalence idp
-
-    bi : (idp ≡ notEq) ⊎ (idp ≡ refl)
-    bi = {!!}
-
-  ret : ∀ b → lift (g ∘ ua ∘ f $ lower b) ≡ b
+  ret : ∀ b → lift (g ∘ f $ lower b) ≡ b
   ret (lift false) = refl
   ret (lift true) = refl
+
+  sec : ∀ idp → f (g idp) ≡ idp
+  -- f (transport idp false) ≡ idp
+  sec idp = {!!}
+    where
+    lemma′ : ua (pathToEquiv idp) ≡ idp
+    lemma′ = secEq univalence idp
+
+    h : Bool → Bool
+    h = transport idp
+
+    bi : (idp ≡ notEq) ⊎ (idp ≡ refl)
+    bi with h true | h false | inspect h true | inspect h false
+    bi | false | false | [ p ] | [ p′ ] = {!!}
+    bi | false | true | [ p ] | [ p′ ] = inl (sym lemma′ ∙ cong ua λ i → h=not i , {!!})
+      where
+      h=not : h ≡ not
+      h=not = funExt λ { true → p; false → p′ }
+    bi | true | false | [ p ] | [ p′ ] = inr {!!}
+      where
+      h=id : h ≡ id
+      h=id = funExt λ { true → p; false → p′ }
+    bi | true | true | [ p ] | [ p′ ] = {!!}
