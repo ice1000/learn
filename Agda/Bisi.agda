@@ -13,11 +13,11 @@ record List (A : Set) : Set where
 open List
 
 -- | Bisimulation as equality
-record _==_ (x : List A) (_ : List A) : Set where
+record _==_ (x : List A) (y : List A) : Set where
   coinductive
   field
-    refl-head : head x ≡ head x
-    refl-tail : tail x == tail x
+    refl-head : head x ≡ head y
+    refl-tail : tail x == tail y
 open _==_
 
 data Nat : Set where
@@ -46,7 +46,7 @@ tail (odd a) = odd (tail (tail a))
 
 simple : (a : List A) -> odd a == even (tail a)
 refl-head (simple a) = refl
-refl-tail (simple a) = refl-tail (refl′ (odd a))
+refl-tail (simple a) = {!!}
 
 merge : List A -> List A -> List A
 head (merge a _) = head a
@@ -55,4 +55,4 @@ tail (tail (merge a b)) = merge (tail a) (tail b)
 
 proof₂ : (a : List A) -> (merge (even a) (odd a) == a)
 refl-head (proof₂ a) = refl
-refl-tail (proof₂ a) = refl-tail (refl′ (merge (even a) (odd a)))
+refl-tail (proof₂ a) = {!refl-tail (refl′ (merge (even a) (odd a)))!}

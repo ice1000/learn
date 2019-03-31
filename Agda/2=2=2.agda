@@ -47,7 +47,7 @@ Bool≡[Bool≡Bool] = ua (isoToEquiv (iso (f ∘ lower) (lift ∘ g) sec ret))
     bi : (idp ≡ notEq) ⊎ (idp ≡ refl)
     bi with h true | h false | inspect h true | inspect h false
     bi | false | false | [ p ] | [ p′ ] = {!!}
-    bi | false | true | [ p ] | [ p′ ] = inl (sym lemma′ ∙ cong ua λ i → h=not i , {!!})
+    bi | false | true | [ p ] | [ p′ ] = {!inl (sym lemma′ ∙ cong ua λ i → h=not i , {!!})!}
       where
       h=not : h ≡ not
       h=not = funExt λ { true → p; false → p′ }
