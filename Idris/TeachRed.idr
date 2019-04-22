@@ -15,7 +15,10 @@ popPush x ys [] = Refl
 popPush x ys (y :: xs) = rewrite popPush x ys xs in Refl
 
 lemma2 : (x: t) -> (ys: Vect n2 t) -> (xs: Vect n1 t) -> (reverse_vect xs) ++ x :: ys = reverse_vect (x :: xs) ++ ys
-lemma2 x ys xs = rewrite popPush x ys (reverse_vect xs) in Refl
+lemma2 x ys xs = popPush x ys (reverse_vect xs)
+
+vecRevPop : (x: t) -> (xs: Vect n t) -> reverse_vect xs `appendLast` x = reverse_vect (x :: xs)
+vecRevPop x xs = Refl
 
 goodAppend : (xs: Vect n2 t) -> (ys: Vect n1 t) -> Vect (n2 + n1) t
 goodAppend [] ys = ys
