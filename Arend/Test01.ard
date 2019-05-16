@@ -1,0 +1,10 @@
+\class Class {
+	\data Nat
+		| Zero
+		| Suc Nat
+
+	\func plus : Nat -> Nat -> Nat => \lam x y => \case x, y \with {
+		| Zero, n => n
+		| Suc n, m => Suc (plus n m)
+	}
+}

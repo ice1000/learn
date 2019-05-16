@@ -105,7 +105,8 @@ isoUnMaybe m@(mamb, mbma) =
 
 -- And we have isomorphism on isomorphism!
 isoSymm :: ISO (ISO a b) (ISO b a)
-isoSymm = (symm, symm)                                                                                             
+isoSymm = (symm, symm)
+
 -- a = b -> c = d -> a * c = b * d
 isoProd :: ISO a b -> ISO c d -> ISO (a, c) (b, d)
 isoProd = isoTuple
