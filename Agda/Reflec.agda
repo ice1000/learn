@@ -11,7 +11,7 @@ open import Data.Nat
 open import Data.Unit
 open import Data.Bool
 open import Data.String using (String)
-open import Data.List using ([]; _∷_)
+open import Data.List using ([]; _∷_; List)
 open import Data.Maybe using (Maybe; just; nothing; maybe′)
 
 -- Engineering your proof with reflection
@@ -69,3 +69,21 @@ _ = refl
 _ : (((!lit 1 !+ (!lit 2 !* !lit 3)) !+ (!lit 4 !* !lit 5)) !+
        !suc (!suc !zro)) ≡ parseℕ (1 + 2 * 3 + 4 * 5 + suc (suc zero))
 _ = refl
+
+joinMaybe : {A : Set} → Maybe (Maybe A) → Maybe A
+joinMaybe (just (just x)) = just x
+joinMaybe _ = nothing
+
+countMaybe : Term → ℕ
+countMaybe (def (quote Maybe) (_ ∷ arg x a ∷ [])) = suc $ countMaybe a
+countMaybe t = 0
+
+generateJojo : Term → ℕ → Term
+generateJojo x zero = x
+generateJojo x (suc zero) = x
+generateJojo x (suc n) = def (quote joinMaybe) (arg defaultArg (generateJojo x n) ∷ [])
+
+macro
+  jojo : Term → Term → TC ⊤
+  jojo t hole = inferType t >>= (unify hole ∘ generateJojo t ∘ countMaybe)
+
