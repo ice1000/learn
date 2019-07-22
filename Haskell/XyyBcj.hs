@@ -2,6 +2,8 @@
 module Main where
 
 import           Control.Monad
+import qualified Data.Text                   as T
+import qualified Data.Text.IO                as I
 import qualified Data.Vector.Unboxed.Mutable as V
 import           GHC.Prim                    (RealWorld)
 
@@ -25,16 +27,17 @@ cat vec x y = do
 resolve :: Int -> UnionFind -> IO ()
 resolve 0 _ = pure ()
 resolve n uf = do
-  [z, x, y] <- map read . words <$> getLine :: IO [Int]
+  [z, x, y] <- map (read . T.unpack) . T.words <$> I.getLine
   if z == 1 then cat uf x y else do
     x' <- ask uf x
     y' <- ask uf y
-    putStrLn $ if x' == y' then "Y" else "N"
+    putChar $ if x' == y' then 'Y' else 'N'
+    putChar '\n'
   resolve (n - 1) uf
 
 main :: IO ()
 main = do
-  [n, m] <- map read . words <$> getLine
+  [n, m] <- map (read . T.unpack) . T.words <$> I.getLine
   vector <- V.replicate (n + 1) (0 :: Int)
   forM_ [0 .. n] $ \i -> V.write vector i i
   resolve m vector
