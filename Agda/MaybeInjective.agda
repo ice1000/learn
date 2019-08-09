@@ -3,11 +3,10 @@ module MaybeInjective where
 
 open import Data.Maybe
 open import Cubical.Core.Everything
-open import Cubical.Foundations.Univalence
-open import Cubical.Foundations.Equiv
-open import Cubical.Data.Everything
+open import Cubical.Foundations.Everything
+open import Cubical.Data.Everything renaming ([_] to list-init)
 
--- maybe helpful
+-- -- maybe helpful
 record Reveal_·_is_ {a b} {A : Set a} {B : A → Set b}
                     (f : (x : A) → B x) (x : A) (y : B x) :
                     Set (ℓ-max a b) where
