@@ -17,3 +17,4 @@ isomorphism2 : ∀ {A B C} → Result2 A (Result2 B C) → Result2 (Result2 A B)
 isomorphism2 (Ok x) = Ok (Ok x)
 isomorphism2 (Err (Ok x)) = Ok (Err x)
 isomorphism2 (Err (Err x)) = Err x
+

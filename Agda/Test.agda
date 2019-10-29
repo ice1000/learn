@@ -38,3 +38,10 @@ plus-comm (suc a) b
   rewrite plus-comm a b
         | lemma₁ a b
           = refl
+
+open import Agda.Builtin.Bool
+
+-- test-non-terminating : Bool → Bool
+-- test-non-terminating true = false
+-- test-non-terminating false = test-non-terminating true
+
